@@ -1,0 +1,8 @@
+# Folders
+Galemojiga.egg-info/
+src/galemojiga.egg-info/
+env/
+.idea/
+
+# extensions
+*.pyc
