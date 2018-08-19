@@ -1,0 +1,65 @@
+BUGS
+* sprites are defaulting to smiles at first. why?
+
+FEATURES
+* game layout
+
+* Master State (scores, difficulty, player count)
+
+* Difficulty Settings
+
+* Main Menu
+  * Choose player number
+  * Choose difficulty
+  * Start/Back
+
+* Quit to Menu on Escape
+  * Re-instantiate a game context
+
+* Score Tracking
+
+* Game Over
+  * Show high score
+  * Show Player score(s)
+  * Exit to Main Menu on interaction
+
+* Effects: don't interact, drawn above all else
+
+* score effect
+  * give it a number, it gives back an image of the score
+
+* Player colors or symbols
+  * Choose player symbols?
+
+* Player Status
+  * health
+  * special type and ammo (one emoji per shot?)
+  * score
+  * Lives left (for the team)
+
+* Hit Animations
+
+* Power Ups
+  * Party Parrot Droppers
+  * Health
+    * Heart for +2 health
+    * Sparkly Heart for Full Health
+  * Main Gun
+    * Diamond for blue gun (str = 2)
+    * Coffee, decreases fire delay
+    * Clinking Glasses, double gun
+  * Special Guns
+    * Default bubble gun: captures, destroys enemy bullets
+    * Lollypop: explodes candy on contact
+    * Sushi Bento: sushi-themed spread gun (5 pieces?)
+      * nigiri, rice ball, tempura
+    * Chili Pepper: rapid-fire fires
+
+
+* New Enemies
+  * Trees/Plants that drop leaves
+  * Sportsballs that bounce
+  * Redface that swears and drops bombs
+  * Bombs that explode
+  * Vampires that send bats
+  * Snowmen and Santas that drop snowflakes

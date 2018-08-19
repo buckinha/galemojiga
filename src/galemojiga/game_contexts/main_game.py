@@ -1,9 +1,11 @@
 import time
+import random
 import pygame
 from pygame.locals import *
 from galemojiga.GameContext import GameContext
 from galemojiga.game_objects.Players import Player, MovementKeys
 from galemojiga.game_contexts.levels import Level1, Level2
+from galemojiga.game_objects.Effects import PartyParrot
 import galemojiga.SpriteHelpers as sprites
 import galemojiga.colors as colors
 import galemojiga.globals as globals
@@ -19,17 +21,30 @@ class MainGameContext(GameContext):
 
         self.player_count = player_count
         self.players = []
+        self.player_scores = {}
+        self.bonus_history = {}
+        self.bonus_at = 30
+
         for i in range(1, self.player_count + 1):
             player = Player(game_context=self,
                             number=i,
                             movement_keys=MovementKeys(i))
             self.players.append(player)
+            self.player_scores[i] = 0
+            self.bonus_history[i] = []
 
+        self.effects = []
         self.enemies = []
         self.bullets = []
+        self.powerups = []
 
         self.image_dict = {
-            'player_ship': sprites.load_ship_p1(),
+            'p1_ship': sprites.load_ship(1),
+            'p2_ship': sprites.load_ship(2),
+            'p3_ship': sprites.load_ship(3),
+            'p1_bullet': sprites.load_player_bullet(1),
+            'p2_bullet': sprites.load_player_bullet(2),
+            'p3_bullet': sprites.load_player_bullet(3),
             'orange_bullet': sprites.load_orange_bullet(),
             'smile': sprites.load_smile(),
             'wink': sprites.load_wink(),
@@ -38,6 +53,10 @@ class MainGameContext(GameContext):
             'tear': sprites.load_tear(),
             'devil': sprites.load_devil()
         }
+
+        # add parrots:
+        for i in range(10):
+            self.image_dict['parrot_{}'.format(i)] = sprites.load_party_parrot_image(i)
 
         self.levels = [Level1(), Level2()]
         self.level_index = 0
@@ -58,6 +77,9 @@ class MainGameContext(GameContext):
 
         # run level events
         self.process_level_events()
+
+        # process effects
+        self.process_effects()
 
         # process collisions
         self.process_player_collisions()
@@ -94,7 +116,6 @@ class MainGameContext(GameContext):
                                              (220, 220, 220))
         self.surface.blit(textsurface, (0, 0))
 
-
     def _current_level_or_None(self):
         if self.level_index >= len(self.levels):
             return None
@@ -123,7 +144,25 @@ class MainGameContext(GameContext):
 
         level.update(self)
 
+    def add_party_parrots(self):
+        for player in self.players:
+            p_score = self.player_scores[player.number]
+            if p_score % self.bonus_at == 0:
+                if p_score > 0:
+                    if p_score not in self.bonus_history[player.number]:
+                        self.bonus_history[player.number].append(p_score)
+                        new_parrot = PartyParrot()
+                        dir = random.choice(['left', 'right'])
+                        new_parrot.direction = dir
+                        if dir == 'left':
+                            new_parrot.position = [globals.MAIN_WINDOW_SIZE[0]+25,0]
+                        self.effects.append(new_parrot)
 
+    def process_effects(self):
+        self.add_party_parrots()
+        for eff in self.effects:
+            eff.update(game_context=self)
+            self.surface.blit(self.image_dict[eff.current_frame], eff.rect)
 
     def process_player_collisions(self):
         for player in self.players:
@@ -131,7 +170,9 @@ class MainGameContext(GameContext):
                 if player.hit_rect.colliderect(enemy.hit_rect):
                     player.hit_by(enemy)
                     enemy.hit_by(player)
-
+            for pup in self.powerups:
+                if player.hit_rect.colliderect(pup.hit_rect):
+                    player.gain_powerup(pup)
 
     def process_bullet_collisions(self):
         for bullet in self.bullets:
@@ -141,10 +182,12 @@ class MainGameContext(GameContext):
                         player.hit_by(bullet)
                         bullet.hit_by(player)
             else:
+                # player bullets
                 for enemy in self.enemies:
                     if bullet.hit_rect.colliderect(enemy.hit_rect):
                         enemy.hit_by(bullet)
                         bullet.hit_by(enemy)
+                        self.player_scores[bullet.launched_by] += 1
 
         self.enemies = [e for e in self.enemies if not e.dead]
         self.bullets = [b for b in self.bullets if not b.dead]
@@ -164,6 +207,7 @@ class MainGameContext(GameContext):
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.RED,
                                  enemy.hit_rect, 1)
+
     def process_bullets(self):
         for bullet in self.bullets:
             bullet.update()

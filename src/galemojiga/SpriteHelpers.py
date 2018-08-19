@@ -12,11 +12,32 @@ def crop(img, rect):
     small_img.blit(source=img, dest=(0,0), area=rect)
     return small_img
 
-def load_ship_p1():
+def load_player_bullet(player=1):
+    p1_coord = (11,7)
+    p2_coord = (7, 15)
+    p3_coord = (8, 15)
+    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-symbols.png')
+    ss = SpriteSheet(path)
+
+    if player == 1:
+        coord = p1_coord
+    elif player == 2:
+        coord = p2_coord
+    else:
+        coord = p3_coord
+    circle_image = ss.image_at(coord)
+    circle_image = pygame.transform.smoothscale(circle_image, [15,15])
+    return circle_image
+
+def load_base_ship():
     path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-travel.png')
     ss = SpriteSheet(path)
     ship_image = ss.image_at((0, 7))
-    ship_image = pygame.transform.rotate(ship_image, 45)
+    return pygame.transform.rotate(ship_image, 45)
+
+def load_ship(player=1):
+    ship_image = load_base_ship()
+    ship_image.blit(source=load_player_bullet(player=player), dest=(21,15))
     return ship_image
 
 def load_orange_bullet():
@@ -70,3 +91,22 @@ def load_devil():
     img = ss.image_at((5, 13))
     img = pygame.transform.scale(img, globals.ENEMY_SCALE)
     return img
+
+def load_image(filename):
+    try:
+        if not os.path.exists(filename):
+            print(os.listdir(os.path.split(filename)[0]))
+        img = pygame.image.load(filename)
+        img.set_colorkey(colors.TRANSPARENT)
+        return img
+
+    except pygame.error as e:
+        print('Unable to load spritesheet image: {}'.format(filename))
+        print(e)
+        raise SystemExit
+
+def load_party_parrot_image(frame=0):
+    path = os.path.join(IMAGE_DIR, 'parrot_{}.png'.format(frame))
+    img = load_image(path).convert()
+    img.set_colorkey(colors.TRANSPARENT)
+    return pygame.transform.smoothscale(img, (25,25))

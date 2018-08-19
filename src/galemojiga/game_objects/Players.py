@@ -53,11 +53,13 @@ class Player(GameObject):
         self.health = 4000
         self.special_ammo = 0
         self.special_type = globals.SPECIAL_TYPES['NONE']
-        self.image = 'player_ship'
+        self.image = 'p{}_ship'.format(self.number)
+        self.bullet_image = 'p{}_bullet'.format(self.number)
         self.firing = False
         self.firing_special = False
         self.size=[19,45]
         self.hit_offset= [18, 5]
+        self.powerup = None
 
 
     def process_movement_keys(self, input_dict):
@@ -125,7 +127,7 @@ class Player(GameObject):
                                 position=[self.position[0]+22,self.position[1]],
                                 speed=globals.PLAYER_GUN_1_SPEED ,
                                 launched_by=self.number,
-                                strength=1)
+                                strength=1, image=self.bullet_image)
                 self.game_context.bullets.append(bullet)
                 self.last_shot_time = now
 
@@ -138,3 +140,6 @@ class Player(GameObject):
             self.health -= enemy_or_bullet.strength
             if self.health <= 0:
                 self.game_context.trigger_game_over()
+
+    def gain_powerup(self, powerup_obj):
+        self.powerup = powerup_obj

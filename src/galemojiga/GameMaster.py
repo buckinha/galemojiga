@@ -21,7 +21,7 @@ class GameMain:
         self.debug_font = pygame.font.SysFont('Comic Sans MS', 12)
 
         self.current_context = MainGameContext(window_size,
-                                               player_count=2,
+                                               player_count=3,
                                                debug_font=self.debug_font)
 
     @property
