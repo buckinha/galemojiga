@@ -1,7 +1,8 @@
 import time
 import copy
 import random
-from galemojiga.GameObject import GameObject, Bullet
+from galemojiga.game_objects.GameObject import GameObject
+from galemojiga.game_objects.Bullets import Bullet, BulletTear
 import galemojiga.globals as globals
 
 
@@ -106,7 +107,8 @@ class Enemy(GameObject):
 
     def __init__(self):
         super().__init__()
-        self.hit_scale = [-10, -10]
+        self.size = globals.ENEMY_SCALE
+        self.hit_scale = [-4, -4]
         self.movement_style = MovementStyle('default')
         self.image_list = ['smile', 'wink']
         self.image = self.image_list[0]
@@ -150,12 +152,9 @@ class EnemyCryer(Enemy):
     def update(self, game_context):
         super().update(game_context)
         if random.randint(0,self.tear_chance_max)  <= self.tear_chance:
-            tear = Bullet(game_context=game_context,
-                          position=copy.copy(self.position),
-                          speed=(0,5),
-                          launched_by='enemy',
-                          strength=1,
-                          image='tear')
+            tear = BulletTear(game_context=game_context,
+                              position=copy.copy(self.position))
+
             game_context.bullets.append(tear)
 
 class EnemyDevil(Enemy):

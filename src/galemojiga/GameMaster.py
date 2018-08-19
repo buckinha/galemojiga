@@ -16,7 +16,13 @@ class GameMain:
 
         pygame.init()
         self.screen = pygame.display.set_mode(self.window_size)
-        self.current_context = MainGameContext(window_size, player_count=2)
+
+        pygame.font.init()
+        self.debug_font = pygame.font.SysFont('Comic Sans MS', 12)
+
+        self.current_context = MainGameContext(window_size,
+                                               player_count=2,
+                                               debug_font=self.debug_font)
 
     @property
     def window_size(self):

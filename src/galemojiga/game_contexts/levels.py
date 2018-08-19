@@ -1,6 +1,6 @@
 import time
 import galemojiga.globals as globals
-from galemojiga.game_contexts.enemies import Enemy, EnemySmiley, EnemyCryer, EnemyDevil
+from galemojiga.game_objects.Enemies import Enemy, EnemySmiley, EnemyCryer, EnemyDevil
 
 FULL_ROW_COUNT = int(globals.MAIN_WINDOW_SIZE[0] / 41)
 FULL_ROW_POSITIONS = [[i*41,0] for i in range(FULL_ROW_COUNT)]

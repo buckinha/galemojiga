@@ -1,4 +1,6 @@
 import pygame
+import galemojiga.globals as globals
+
 
 def get_input_dict(events):
     event_dict = {'key_down': set(),
@@ -10,3 +12,4 @@ def get_input_dict(events):
         elif event.type == pygame.KEYUP:
             event_dict['key_up'].add(event.key)
     return event_dict
+
