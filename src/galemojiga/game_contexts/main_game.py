@@ -73,6 +73,9 @@ class MainGameContext(GameContext):
         # TODO a better way would be to blit only sections that are changing
         self.surface.fill(colors.BLACK)
 
+        # quit?
+        self.check_quit(input_dict)
+
         # debug switches
         self.process_debug_switches(input_dict)
 
@@ -99,6 +102,11 @@ class MainGameContext(GameContext):
         self.process_environment()
 
         screen.blit(self.surface, self.surface.get_rect())
+
+    def check_quit(self, input_dict):
+        if K_ESCAPE in input_dict['key_up']:
+            self.game_master.reset_context('main_game')
+            self.game_master.set_context('main_menu')
 
     def process_debug_switches(self, input_dict):
         if K_F8 in input_dict['key_up']:

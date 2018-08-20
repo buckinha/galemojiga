@@ -8,26 +8,16 @@ FEATURES
 
 * Difficulty Settings
 
-* Main Menu
-  * Choose player number
-  * Choose difficulty
-  * Start/Back
-
-* Quit to Menu on Escape
-  * Re-instantiate a game context
+* Escape gives Pause screen
+  * options to quit or continue
 
 * Game Over
   * Show high score
   * Show Player score(s)
   * Exit to Main Menu on interaction
 
-* Effects: don't interact, drawn above all else
-
 * score effect
   * give it a number, it gives back an image of the score
-
-* Player colors or symbols
-  * Choose player symbols?
 
 * Player Status
   * health
