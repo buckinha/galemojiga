@@ -16,8 +16,6 @@ FEATURES
 * Quit to Menu on Escape
   * Re-instantiate a game context
 
-* Score Tracking
-
 * Game Over
   * Show high score
   * Show Player score(s)

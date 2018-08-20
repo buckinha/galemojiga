@@ -13,11 +13,12 @@ import galemojiga.globals as globals
 
 class MainGameContext(GameContext):
 
-    def __init__(self, size, player_count=1, debug_font=None):
+    def __init__(self, game_master, size, player_count=1,
+                 difficulty=1, debug_font=None):
         if player_count > globals.MAX_PLAYERS:
             raise SystemExit
 
-        super().__init__(size)
+        super().__init__(game_master, size)
 
         self.player_count = player_count
         self.players = []
@@ -215,6 +216,7 @@ class MainGameContext(GameContext):
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.RED,
                                  bullet.hit_rect, 1)
+
     def process_environment(self):
         return None
 

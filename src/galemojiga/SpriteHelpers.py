@@ -16,7 +16,7 @@ def load_player_bullet(player=1):
     p1_coord = (11,7)
     p2_coord = (7, 15)
     p3_coord = (8, 15)
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-symbols.png')
+    path = 'emojione-sprite-40-symbols.png'
     ss = SpriteSheet(path)
 
     if player == 1:
@@ -30,7 +30,7 @@ def load_player_bullet(player=1):
     return circle_image
 
 def load_base_ship():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-travel.png')
+    path = 'emojione-sprite-40-travel.png'
     ss = SpriteSheet(path)
     ship_image = ss.image_at((0, 7))
     return pygame.transform.rotate(ship_image, 45)
@@ -41,7 +41,7 @@ def load_ship(player=1):
     return ship_image
 
 def load_orange_bullet():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-symbols.png')
+    path = 'emojione-sprite-40-symbols.png'
     ss = SpriteSheet(path)
     img = ss.image_at((11,10))
     img = pygame.transform.smoothscale(img, globals.BULLET_SCALE)
@@ -51,42 +51,42 @@ def load_orange_bullet():
     return small_img
 
 def load_smile():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-people.png')
+    path = 'emojione-sprite-40-people.png'
     ss = SpriteSheet(path)
     img = ss.image_at((5, 15))
     img = pygame.transform.scale(img, globals.ENEMY_SCALE)
     return img
 
 def load_wink():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-people.png')
+    path = 'emojione-sprite-40-people.png'
     ss = SpriteSheet(path)
     img = ss.image_at((6, 13))
     img = pygame.transform.scale(img, globals.ENEMY_SCALE)
     return img
 
 def load_cryer_1():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-people.png')
+    path = 'emojione-sprite-40-people.png'
     ss = SpriteSheet(path)
     img = ss.image_at((3, 14))
     img = pygame.transform.scale(img, globals.ENEMY_SCALE)
     return img
 
 def load_cryer_2():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-people.png')
+    path = 'emojione-sprite-40-people.png'
     ss = SpriteSheet(path)
     img = ss.image_at((14, 13))
     img = pygame.transform.scale(img, globals.ENEMY_SCALE)
     return img
 
 def load_tear():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-nature.png')
+    path = 'emojione-sprite-40-nature.png'
     ss = SpriteSheet(path)
     img = ss.image_at((7, 10))
     img = pygame.transform.scale(img, globals.BULLET_SCALE)
     return img
 
 def load_devil():
-    path = os.path.join(IMAGE_DIR, 'emojione-sprite-40-people.png')
+    path = 'emojione-sprite-40-people.png'
     ss = SpriteSheet(path)
     img = ss.image_at((5, 13))
     img = pygame.transform.scale(img, globals.ENEMY_SCALE)

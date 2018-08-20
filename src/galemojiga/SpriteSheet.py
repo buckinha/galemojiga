@@ -6,17 +6,20 @@ import os
 import pygame
 from pygame.locals import *
 import galemojiga.colors as colors
+import galemojiga.globals as globals
+
 
 class SpriteSheet(object):
     def __init__(self, filename, tile_size=(41, 41)):
+        fname = os.path.join(globals.IMAGE_DIR, filename)
         try:
-            if not os.path.exists(filename):
-               print(os.listdir(os.path.split(filename)[0]))
-            self.sheet = pygame.image.load(filename)
+            if not os.path.exists(fname):
+               print(os.listdir(os.path.split(fname)[0]))
+            self.sheet = pygame.image.load(fname)
             self.sheet.set_colorkey(colors.TRANSPARENT)
 
         except pygame.error as e:
-            print('Unable to load spritesheet image: {}'.format(filename))
+            print('Unable to load spritesheet image: {}'.format(fname))
             print(e)
             raise SystemExit
 
