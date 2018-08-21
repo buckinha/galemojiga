@@ -4,8 +4,8 @@ import pygame
 from pygame.locals import *
 from galemojiga.GameContext import GameContext
 from galemojiga.game_objects.Players import Player, MovementKeys
-from galemojiga.game_contexts.levels import Level1, Level2
-from galemojiga.game_objects.Effects import PartyParrot
+from galemojiga.game_contexts.levels import Level1, Level2, Level3
+from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight
 import galemojiga.SpriteHelpers as sprites
 import galemojiga.colors as colors
 import galemojiga.globals as globals
@@ -54,12 +54,14 @@ class MainGameContext(GameContext):
             'tear': sprites.load_tear(),
             'devil': sprites.load_devil()
         }
-
+        # add cars:
+        for i in range(8):
+            self.image_dict['car_{}'.format(i)] = self.game_master.sprite_master.get_image('travel', (i, 8))
         # add parrots:
         for i in range(10):
             self.image_dict['parrot_{}'.format(i)] = sprites.load_party_parrot_image(i)
 
-        self.levels = [Level1(), Level2()]
+        self.levels = [Level3(), Level1(), Level2()]
         self.level_index = 0
         self.new_level_delay = 5
         self.level_finish_time = 0
@@ -160,11 +162,7 @@ class MainGameContext(GameContext):
                 if p_score > 0:
                     if p_score not in self.bonus_history[player.number]:
                         self.bonus_history[player.number].append(p_score)
-                        new_parrot = PartyParrot()
-                        dir = random.choice(['left', 'right'])
-                        new_parrot.direction = dir
-                        if dir == 'left':
-                            new_parrot.position = [globals.MAIN_WINDOW_SIZE[0]+25,0]
+                        new_parrot = random.choice([PartyParrotLeft(), PartyParrotRight()])
                         self.effects.append(new_parrot)
 
     def process_effects(self):
@@ -204,7 +202,7 @@ class MainGameContext(GameContext):
     def process_player_inputs(self, input_dict):
         for player in self.players:
             player.update(input_dict)
-            self.surface.blit(self.image_dict[player.image], player.rect)
+            self.surface.blit(self.image_dict[player.current_frame], player.rect)
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.BLUE,
                                  player.hit_rect, 1)
@@ -212,7 +210,7 @@ class MainGameContext(GameContext):
     def process_enemy_behavior(self):
         for enemy in self.enemies:
             enemy.update(game_context=self)
-            self.surface.blit(self.image_dict[enemy.image], enemy.rect)
+            self.surface.blit(self.image_dict[enemy.current_frame], enemy.rect)
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.RED,
                                  enemy.hit_rect, 1)

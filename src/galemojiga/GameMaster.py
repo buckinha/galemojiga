@@ -19,6 +19,9 @@ class GameMaster:
         self.player_count = 1
         self.difficulty = 1
 
+        # center the game window
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+
         pygame.init()
         self.screen = pygame.display.set_mode(self.window_size)
 
@@ -89,7 +92,8 @@ class SpriteMaster:
 
     def get_image(self, sheet, position):
         if sheet in self.sprite_sheets:
-            return self.sprite_sheets[sheet].image_at(position)
+            img = self.sprite_sheets[sheet].image_at(position)
+            return pygame.transform.smoothscale(img, globals.ENEMY_SCALE)
         else:
             return None
 

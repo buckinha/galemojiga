@@ -23,8 +23,8 @@ class Bullet(GameObject):
         self.dead = False
 
     def update(self):
-        self.position[0] += self.speed_vertical
-        self.position[1] += self.speed_horizontal
+        self.x += self.speed_vertical
+        self.y += self.speed_horizontal
         self.check_dismissal()
 
     def check_dismissal(self):

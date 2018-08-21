@@ -1,15 +1,14 @@
 import time
 import galemojiga.globals as globals
-from galemojiga.game_objects.Enemies import Enemy, EnemySmiley, EnemyCryer, EnemyDevil
+from galemojiga.game_objects.Enemies import *
 
-FULL_ROW_COUNT = int(globals.MAIN_WINDOW_SIZE[0] / 41)
-FULL_ROW_POSITIONS = [[i*41,0] for i in range(FULL_ROW_COUNT)]
+FULL_ROW_POSITIONS = [[i*globals.UNIT, globals.CEILING] for i in range(globals.H_UNITS)]
 
 class WaveEmpty:
-    def __init__(self):
-        pass
+
     def spawn(self, game_context):
         pass
+
 
 def full_row_of(enemy_type):
     enemies = []
@@ -20,12 +19,10 @@ def full_row_of(enemy_type):
     return enemies
 
 
-class WaveSmileyShimmy:
-    def __init__(self):
-        pass
+class WaveWinkersLeft:
 
     def spawn(self, game_context):
-        for enemy in full_row_of(EnemySmiley):
+        for enemy in full_row_of(EnemyWinkerLeft):
             game_context.enemies.append(enemy)
 
 
@@ -35,53 +32,68 @@ class Wave2Devils:
 
     def spawn(self, game_context):
 
-        devil1 = EnemyDevil()
-        devil1.position = [50, 0]
-        devil2 = EnemyDevil()
-        devil2.position = [globals.MAIN_WINDOW_SIZE[0] - 50, 0]
+        devil1 = EnemyDevilLeft()
+        devil2 = EnemyDevilRight()
         game_context.enemies.append(devil1)
         game_context.enemies.append(devil2)
 
-class WaveSmileysAndCryers:
+class WaveWinkersAndCryersLeft:
 
     def __init__(self):
         pass
 
     def spawn(self, game_context):
-        row_count = int(globals.MAIN_WINDOW_SIZE[0] / 41)
-        for i in range(row_count):
-            if i%3 == 0:
-                enemy = EnemyCryer()
-                enemy.position[0] = i * 41
+        for i in range(globals.H_UNITS):
+            if i % 2 == 0:
+                enemy = EnemyCryerLeft()
             else:
-                enemy = Enemy()
-                enemy.position[0] = i * 41
+                enemy = EnemyWinkerLeft()
+
+            enemy.x += i * globals.UNIT
             game_context.enemies.append(enemy)
 
-class WaveSmileysAndDevils:
-
-    def __init__(self):
-        pass
+class WaveWinkersAndDevilsLeft:
 
     def spawn(self, game_context):
-        row_count = int(globals.MAIN_WINDOW_SIZE[0] / 41)
-        for i in range(row_count):
-            if i%3 == 0:
-                enemy = EnemyDevil()
-                enemy.position[0] = i * 41
+        for i in range(globals.H_UNITS):
+            if i % 2 == 0:
+                enemy = EnemyCryerLeft()
             else:
-                enemy = Enemy()
-                enemy.position[0] = i * 41
+                enemy = EnemyDevilLeft()
+
+            enemy.x += i * globals.UNIT
             game_context.enemies.append(enemy)
 
-class WaveCryers:
-    def __init__(self):
-        pass
+class WaveCryersLeft:
 
     def spawn(self, game_context):
-        for enemy in full_row_of(EnemyCryer):
+        for enemy in full_row_of(EnemyCryerLeft):
             game_context.enemies.append(enemy)
 
+
+class WaveCarsLeft:
+
+    def spawn(self, game_context):
+        for i in range(5):
+            car = GenericLeftSideSwerver()
+            car.frame_list = ['car_{}'.format(random.randint(0,7))]
+            car.x += globals.UNIT * i
+            game_context.enemies.append(car)
+
+class WaveCarsRight:
+    def spawn(self, game_context):
+        for i in range(5):
+            car = GenericRightSideSwerver()
+            car.frame_list = ['car_{}'.format(random.randint(0, 7))]
+            car.x -= globals.UNIT * i
+            game_context.enemies.append(car)
+
+class WaveCarsBoth:
+    def spawn(self, game_context):
+        left = WaveCarsLeft()
+        right = WaveCarsRight()
+        left.spawn(game_context)
+        right.spawn(game_context)
 
 class LevelAbstract:
     def __init__(self):
@@ -116,13 +128,13 @@ class Level1(LevelAbstract):
 
     def __init__(self):
         super().__init__()
-        self.waves = [WaveSmileyShimmy(),
-                      WaveSmileyShimmy(),
-                      WaveSmileyShimmy(),
+        self.waves = [WaveWinkersLeft(),
+                      WaveWinkersLeft(),
+                      WaveWinkersLeft(),
                       WaveEmpty(),
-                      WaveSmileysAndCryers(),
-                      WaveSmileyShimmy(),
-                      WaveSmileysAndCryers()]
+                      WaveWinkersAndCryersLeft(),
+                      WaveWinkersLeft(),
+                      WaveWinkersAndCryersLeft()]
         self.waves_spawned = [False] * len(self.waves)
 
 
@@ -130,13 +142,22 @@ class Level2(LevelAbstract):
 
     def __init__(self):
         super().__init__()
-        self.waves = [WaveSmileyShimmy(),
-                      WaveSmileysAndCryers(),
-                      WaveCryers(),
+        self.waves = [WaveWinkersLeft(),
+                      WaveWinkersAndCryersLeft(),
+                      WaveCryersLeft(),
                       WaveEmpty(),
-                      WaveSmileysAndCryers(),
+                      WaveWinkersAndCryersLeft(),
                       Wave2Devils(),
-                      WaveSmileysAndCryers(),
-                      WaveSmileysAndDevils(),
-                      WaveCryers()]
+                      WaveWinkersAndCryersLeft(),
+                      WaveWinkersAndDevilsLeft(),
+                      WaveCryersLeft()]
+        self.waves_spawned = [False] * len(self.waves)
+
+class Level3(LevelAbstract):
+
+    def __init__(self):
+        super().__init__()
+        self.waves = [WaveCarsLeft(),
+                      WaveCarsRight(),
+                      WaveCarsBoth()]
         self.waves_spawned = [False] * len(self.waves)

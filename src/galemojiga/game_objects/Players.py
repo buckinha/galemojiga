@@ -36,7 +36,7 @@ class Player(GameObject):
     def __init__(self, game_context, number, movement_keys, position=None):
         super().__init__()
         if position is None:
-            self.position = [globals.MAIN_WINDOW_SIZE[0]/2, globals.MAIN_WINDOW_SIZE[1]-55]
+            self.position = [globals.H_MIDDLE, globals.FLOOR - 40]
         else:
             self.position = [position[0], position[1]]
 
@@ -53,7 +53,7 @@ class Player(GameObject):
         self.health = 4000
         self.special_ammo = 0
         self.special_type = globals.SPECIAL_TYPES['NONE']
-        self.image = 'p{}_ship'.format(self.number)
+        self.frame_list = ['p{}_ship'.format(self.number)]
         self.bullet_image = 'p{}_bullet'.format(self.number)
         self.firing = False
         self.firing_special = False
@@ -102,20 +102,20 @@ class Player(GameObject):
 
     def move(self, input_dict):
         self.process_movement_keys(input_dict)
-        self.position[0] += (self.speed_right - self.speed_left)
-        self.position[1] += (self.speed_down - self.speed_up)
+        self.x += (self.speed_right - self.speed_left)
+        self.y += (self.speed_down - self.speed_up)
 
-        if self.position[0] < 0:
-            self.position[0] = 0
+        if self.x < 0:
+            self.x = 0
 
-        if self.position[0] >= globals.MAIN_WINDOW_SIZE[0] - 55:
-            self.position[0] = globals.MAIN_WINDOW_SIZE[0] - 55
+        if self.x >= globals.MAIN_WINDOW_SIZE[0] - 55:
+            self.x = globals.MAIN_WINDOW_SIZE[0] - 55
 
-        if self.position[1] <= 0:
-            self.position[1] = 0
+        if self.y <= 0:
+            self.y = 0
 
-        if self.position[1] >= globals.MAIN_WINDOW_SIZE[1] - 55:
-            self.position[1]= globals.MAIN_WINDOW_SIZE[1] - 55
+        if self.y >= globals.MAIN_WINDOW_SIZE[1] - 55:
+            self.y = globals.MAIN_WINDOW_SIZE[1] - 55
 
     def fire(self, input_dict):
         self.process_firing_keys(input_dict)
@@ -124,7 +124,7 @@ class Player(GameObject):
         if time_since_last_shot >= globals.FIRE_DELAY:
             if self.firing is True:
                 bullet = Bullet(game_context=self.game_context,
-                                position=[self.position[0]+22,self.position[1]],
+                                position=[self.x+22, self.y],
                                 speed=globals.PLAYER_GUN_1_SPEED ,
                                 launched_by=self.number,
                                 strength=1, image=self.bullet_image)
