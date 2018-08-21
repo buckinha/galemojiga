@@ -90,12 +90,26 @@ class SpriteMaster:
             'activity': SpriteSheet('emojione-sprite-40-activity.png')
         }
 
-    def get_image(self, sheet, position):
+        self.image_name_dict = {
+            'heart': {'sheet': 'symbols',
+                      'pos': [16, 10]}
+
+        }
+
+    def get_image(self, sheet, position, scale=globals.ENEMY_SCALE):
         if sheet in self.sprite_sheets:
             img = self.sprite_sheets[sheet].image_at(position)
-            return pygame.transform.smoothscale(img, globals.ENEMY_SCALE)
+            return pygame.transform.smoothscale(img, scale)
         else:
             return None
+
+    def get_image_name(self, name, scale=globals.ENEMY_SCALE):
+        if name in self.image_name_dict:
+            sheet = self.image_name_dict[name]['sheet']
+            pos = self.image_name_dict[name]['pos']
+            return self.get_image(sheet, pos, scale)
+        else:
+            raise KeyError('Key "{}" not found in SpriteMaster name dictionary'.format(name))
 
 if __name__ == "__main__":
     game = GameMaster()

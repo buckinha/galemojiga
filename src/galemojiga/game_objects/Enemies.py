@@ -20,6 +20,7 @@ class Enemy(GameObject):
         self.dead = False
         self.speed_h = 3
         self.speed_v = 3
+        self.strength = 1
 
     def hit_by(self, something):
         if isinstance(something, Bullet):
@@ -27,6 +28,10 @@ class Enemy(GameObject):
         if self.health <= 0:
             self.dead = True
 
+    def update(self, game_context):
+        super().update(game_context)
+        if self.y >= globals.FLOOR + 100:
+            self.dead = True
 
 class GenericLeftShimmier(Enemy):
 

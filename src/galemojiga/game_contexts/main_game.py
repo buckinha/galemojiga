@@ -5,7 +5,7 @@ from pygame.locals import *
 from galemojiga.GameContext import GameContext
 from galemojiga.game_objects.Players import Player, MovementKeys
 from galemojiga.game_contexts.levels import Level1, Level2, Level3
-from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight
+from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight, PlayerStats
 import galemojiga.SpriteHelpers as sprites
 import galemojiga.colors as colors
 import galemojiga.globals as globals
@@ -22,6 +22,7 @@ class MainGameContext(GameContext):
 
         self.player_count = player_count
         self.players = []
+        self.player_stats_list = []
         self.player_scores = {}
         self.bonus_history = {}
         self.bonus_at = 30
@@ -33,6 +34,8 @@ class MainGameContext(GameContext):
             self.players.append(player)
             self.player_scores[i] = 0
             self.bonus_history[i] = []
+            status_obj = PlayerStats(player)
+            self.player_stats_list.append(status_obj)
 
         self.effects = []
         self.enemies = []
@@ -61,13 +64,16 @@ class MainGameContext(GameContext):
         for i in range(10):
             self.image_dict['parrot_{}'.format(i)] = sprites.load_party_parrot_image(i)
 
-        self.levels = [Level3(), Level1(), Level2()]
+        self.levels = [Level1(), Level2(), Level3()]
         self.level_index = 0
         self.new_level_delay = 5
         self.level_finish_time = 0
 
         self.debug_on = False
         self.debug_font = debug_font
+
+    def trigger_game_over(self):
+        self.quit_to_menu()
 
     def update(self, screen, input_dict):
 
@@ -103,12 +109,17 @@ class MainGameContext(GameContext):
         # process environment
         self.process_environment()
 
+        self.draw_player_statuses()
+
         screen.blit(self.surface, self.surface.get_rect())
 
     def check_quit(self, input_dict):
         if K_ESCAPE in input_dict['key_up']:
-            self.game_master.reset_context('main_game')
-            self.game_master.set_context('main_menu')
+            self.quit_to_menu()
+
+    def quit_to_menu(self):
+        self.game_master.reset_context('main_game')
+        self.game_master.set_context('main_menu')
 
     def process_debug_switches(self, input_dict):
         if K_F8 in input_dict['key_up']:
@@ -225,6 +236,12 @@ class MainGameContext(GameContext):
 
     def process_environment(self):
         return None
+
+    def draw_player_statuses(self):
+        for stats in self.player_stats_list:
+            stats.update_surface(game_context=self)
+            # the stats objects update their own surface, so just blit it
+            self.surface.blit(stats.surface, stats.rect)
 
 
 

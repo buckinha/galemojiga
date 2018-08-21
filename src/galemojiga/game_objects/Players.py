@@ -50,7 +50,7 @@ class Player(GameObject):
         self.speed_horizontal_magnitude = 4
         self.speed_vertical_magnitude = 0
         self.last_shot_time = 0
-        self.health = 4000
+        self.health = 4
         self.special_ammo = 0
         self.special_type = globals.SPECIAL_TYPES['NONE']
         self.frame_list = ['p{}_ship'.format(self.number)]
@@ -59,8 +59,20 @@ class Player(GameObject):
         self.firing_special = False
         self.size=[19,45]
         self.hit_offset= [18, 5]
-        self.powerup = None
 
+        self.powerup = None
+        self.base_bullet_str = 1
+        if self.difficulty == 1:
+            self.power_factor = 2
+        elif self.difficulty == 2:
+            self.power_factor = 1
+        else:
+            self.power_factor = 0.5
+
+
+    @property
+    def difficulty(self):
+        return self.game_context.game_master.difficulty
 
     def process_movement_keys(self, input_dict):
         if self.movement_key_list is None:
@@ -105,17 +117,17 @@ class Player(GameObject):
         self.x += (self.speed_right - self.speed_left)
         self.y += (self.speed_down - self.speed_up)
 
-        if self.x < 0:
-            self.x = 0
+        if self.x < globals.LEFT_WALL:
+            self.x = globals.LEFT_WALL
 
-        if self.x >= globals.MAIN_WINDOW_SIZE[0] - 55:
-            self.x = globals.MAIN_WINDOW_SIZE[0] - 55
+        if self.x + self.size[0] >= globals.RIGHT_WALL:
+            self.x = globals.RIGHT_WALL - self.size[0]
 
-        if self.y <= 0:
-            self.y = 0
+        if self.y <= globals.CEILING:
+            self.y = globals.CEILING
 
-        if self.y >= globals.MAIN_WINDOW_SIZE[1] - 55:
-            self.y = globals.MAIN_WINDOW_SIZE[1] - 55
+        if self.y + self.size[1] >= globals.FLOOR:
+            self.y = globals.FLOOR - self.size[1]
 
     def fire(self, input_dict):
         self.process_firing_keys(input_dict)
@@ -127,7 +139,8 @@ class Player(GameObject):
                                 position=[self.x+22, self.y],
                                 speed=globals.PLAYER_GUN_1_SPEED ,
                                 launched_by=self.number,
-                                strength=1, image=self.bullet_image)
+                                strength=self.base_bullet_str*self.power_factor,
+                                image=self.bullet_image)
                 self.game_context.bullets.append(bullet)
                 self.last_shot_time = now
 
@@ -136,10 +149,11 @@ class Player(GameObject):
         self.fire(input_dict)
 
     def hit_by(self, enemy_or_bullet):
-        if type(enemy_or_bullet) is Bullet:
+        if hasattr(enemy_or_bullet, 'strength'):
             self.health -= enemy_or_bullet.strength
             if self.health <= 0:
                 self.game_context.trigger_game_over()
+
 
     def gain_powerup(self, powerup_obj):
         self.powerup = powerup_obj

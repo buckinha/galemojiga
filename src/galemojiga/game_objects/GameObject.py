@@ -52,7 +52,7 @@ class GameObject:
         return self.frame_list[self.frame_index]
 
 
-    def update(self, game_context=None):
+    def update(self, game_context):
         self.do_move()
 
         # check next frame

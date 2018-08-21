@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import *
 from galemojiga.GameContext import GameContext
 import galemojiga.colors as colors
+import galemojiga.globals as globals
 
 
 class MainMenuContext(GameContext):
@@ -64,7 +65,9 @@ class MainMenuContext(GameContext):
                                                         (220, 220, 220))
         text_pos = (p['players_1'][0], p['players_1'][1] - 30)
         self.surface.blit(textsurface, text_pos)
-        img = self.game_master.sprite_master.get_image('objects', (4, 10))
+        img = self.game_master.sprite_master.get_image('objects',
+                                                       (4, 10),
+                                                       scale=globals.NORMAL_SCALE)
 
         def _add(t1, t2):
             return (t1[0] + t2[0], t1[1] + t2[1])
@@ -85,7 +88,9 @@ class MainMenuContext(GameContext):
                                                         (220, 220, 220))
         text_pos = (p['difficulty_1'][0], p['difficulty_1'][1] - 30)
         self.surface.blit(textsurface, text_pos)
-        img = self.game_master.sprite_master.get_image('people', (13, 14))
+        img = self.game_master.sprite_master.get_image('people',
+                                                       (13, 14),
+                                                       scale=globals.NORMAL_SCALE)
 
         def _add(t1, t2):
             return (t1[0] + t2[0], t1[1] + t2[1])
@@ -116,7 +121,8 @@ class MainMenuContext(GameContext):
         self.surface.blit(quite_image_text, pos_quit)
 
     def move_selector(self, input_dict):
-        if K_UP in input_dict['key_up']:
+        if (K_UP in input_dict['key_up']) or \
+           (K_w in input_dict['key_up']):
 
             if self.selector_position == 'players_1':
                 self.selector_position = 'start'
@@ -136,7 +142,8 @@ class MainMenuContext(GameContext):
             elif self.selector_position == 'quit':
                 self.selector_position = 'difficulty_3'
 
-        if K_DOWN in input_dict['key_up']:
+        if K_DOWN in input_dict['key_up'] or \
+           (K_s in input_dict['key_up']):
             if self.selector_position == 'start':
                 self.selector_position = 'players_1'
             elif self.selector_position == 'players_1':
@@ -155,7 +162,8 @@ class MainMenuContext(GameContext):
             elif self.selector_position == 'difficulty_3':
                 self.selector_position = 'quit'
 
-        if K_LEFT in input_dict['key_up']:
+        if K_LEFT in input_dict['key_up'] or \
+           (K_a in input_dict['key_up']):
             if self.selector_position == 'difficulty_1':
                 self.selector_position = 'players_1'
             elif self.selector_position == 'difficulty_2':
@@ -173,7 +181,8 @@ class MainMenuContext(GameContext):
             elif self.selector_position == 'quit':
                 self.selector_position = 'start'
 
-        if K_RIGHT in input_dict['key_up']:
+        if K_RIGHT in input_dict['key_up'] or \
+           (K_d in input_dict['key_up']):
             if self.selector_position == 'players_1':
                 self.selector_position = 'difficulty_1'
             elif self.selector_position == 'players_2':
