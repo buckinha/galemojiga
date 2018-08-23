@@ -42,7 +42,7 @@ class MainGameContext(GameContext):
         self.bullets = []
         self.powerups = []
 
-        self.levels = [Level3(), Level1(), Level2(), Level3()]
+        self.levels = [Level1(), Level2(), Level3()]
         self.level_index = 0
         self.new_level_delay = 5
         self.level_finish_time = 0

@@ -1,3 +1,4 @@
+import random
 from galemojiga.game_objects.GameObject import GameObject
 import galemojiga.globals as globals
 
@@ -23,6 +24,11 @@ class Bullet(GameObject):
 
         self.frame_list = [image]
 
+        self.game_context = game_context
+
+        self.immune_ticks = 0
+        self.expire_ticks = -1
+
     def update(self, game_context):
         self.x += self.speed_vertical
         self.y += self.speed_horizontal
@@ -32,10 +38,17 @@ class Bullet(GameObject):
         buffer = 50
         if self.position[1] < -buffer or self.position[1] > globals.MAIN_WINDOW_SIZE[1] + buffer:
             self.dead = True
+        if self.expire_ticks > 0:
+            self.expire_ticks -= 1
+            if self.expire_ticks == 0:
+                self.dead = True
 
     def hit_by(self, anything):
-        self.dead = True
-        self.strength = 0
+        if self.immune_ticks <= 0:
+            self.dead = True
+            self.strength = 0
+        else:
+            self.immune_ticks -= 1
 
 
 class BulletTear(Bullet):
@@ -49,3 +62,59 @@ class BulletTear(Bullet):
 
         self.size = [14, 17]
         self.hit_offset = [4, 2]
+
+
+class BulletShatter(Bullet):
+
+    def __init__(self, game_context, position, speed, launched_by,
+                 strength, image):
+        super().__init__(game_context, position, speed, launched_by,
+                 strength, image)
+        self.shard_image = 'bomb'
+        self.shard_strength = 1
+        self.shards = 8
+        self.shard_speed_h = 10
+        self.shard_speed_v = 10
+        self.auto_shatter = False
+        self.auto_shatter_at = globals.CEILING + 50
+
+    def _random_shard_speed(self):
+        spd_v = random.choice([-1, 0, 1]) * self.shard_speed_v
+        spd_h = random.choice([-1, 0, 1]) * self.shard_speed_h
+        # check for zero speeds
+        if spd_v + spd_h == 0:
+            spd_h = random.choice([-1,1]) * self.shard_speed_h
+        return [spd_h, spd_v]
+
+    def update(self, game_context):
+        if self.auto_shatter:
+            if abs(self.y - self.auto_shatter_at) < 50:
+                self.hit_by('anything')
+        super().update(game_context)
+
+    def hit_by(self, anything):
+        for i in range(self.shards):
+            shard = Bullet(game_context=self.game_context,
+                           position=self.position,
+                           speed=self._random_shard_speed(),
+                           launched_by=self.launched_by,
+                           strength=self.shard_strength,
+                           image=self.shard_image)
+            shard.immune_ticks = 5
+            shard.expire_ticks = 12
+            shard.size = globals.ENEMY_SCALE
+            self.game_context.bullets.append(shard)
+        super().hit_by(anything)
+
+
+class CandyBullet(BulletShatter):
+    def __init__(self, game_context, position, speed, launched_by):
+        super().__init__(game_context, position, speed, launched_by,
+                 strength=1, image='candy')
+        self.shard_image = 'candy'
+        self.shard_strength = 1
+        self.shards = 8
+        self.shard_speed_h = 12
+        self.shard_speed_v = 4
+        self.auto_shatter = True
+        self.auto_shatter_at = globals.CEILING

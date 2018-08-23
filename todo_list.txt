@@ -29,9 +29,6 @@ FEATURES
   * Special Guns
     * Default bubble gun: destroys enemy bullets
     * Lollypop: explodes candy on contact
-    * Sushi Bento: sushi-themed spread gun (5 pieces?)
-      * nigiri, rice ball, tempura
-    * Chili Pepper: rapid-fire fires
 
 
 * New Enemies

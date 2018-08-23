@@ -86,5 +86,5 @@ class PlayerStats(GameObject):
             y_offset = 35
             sprite = self.player.special_gun.powerup_sprite
             img = game_context.game_master.sprite_master.get_image_name(sprite)
-            for i in range(min(self.player.special_gun.shots, 8)):
+            for i in range(min(int(self.player.special_gun.shots), 8)):
                 self.surface.blit(img, (x_offset + (i*25), y_offset))
