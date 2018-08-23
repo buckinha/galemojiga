@@ -59,6 +59,7 @@ class PlayerStats(GameObject):
         self.x = (self.player.number - 1) * (self.size[0]) + (4 * self.player.number)
         self.y = globals.FLOOR
         self.surface.set_colorkey(colors.TRANSPARENT)
+        self.scoreboard = Scoreboard()
 
     def update_surface(self, game_context):
         self.surface.fill(color=colors.BLACK)
@@ -71,7 +72,11 @@ class PlayerStats(GameObject):
         pygame.draw.rect(self.surface, colors.BLUE, ((0,0), self.size), 3)
 
     def update_score_image(self, game_context):
-        pass
+        x_offset = 10
+        y_offset = 60
+        score = game_context.player_scores[self.player.number]
+        img = self.scoreboard.get_scoreboard(score, game_context)
+        self.surface.blit(img, (x_offset, y_offset))
 
     def update_health_image(self, game_context):
         x_offset = 10
@@ -88,3 +93,32 @@ class PlayerStats(GameObject):
             img = game_context.game_master.sprite_master.get_image_name(sprite)
             for i in range(min(int(self.player.special_gun.shots), 8)):
                 self.surface.blit(img, (x_offset + (i*25), y_offset))
+
+
+class Scoreboard(GameObject):
+
+    def __init__(self):
+        super().__init__()
+        self.size = [(globals.WINDOW_WIDTH/3)-25, 25]
+        self.surface = pygame.Surface(self.rect.size)
+
+    def get_digits(self, score):
+        if score <= 0:
+            return [0]
+
+        s = int(score)
+        digits = []
+        while s / 10 >= 1:
+            digits.append(s % 10)
+            s = int(s / 10)
+        digits.append(s)
+
+        return [i for i in reversed(digits)]
+
+    def get_scoreboard(self, score, game_context):
+        self.surface.fill(color=colors.BLACK)
+        digits = self.get_digits(score)
+        for i in range(len(digits)):
+            img= game_context.game_master.sprite_master.get_image_name(str(digits[i]))
+            self.surface.blit(img, ((i*globals.ENEMY_SCALE[0], 0), globals.ENEMY_SCALE))
+        return self.surface

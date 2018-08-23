@@ -118,7 +118,17 @@ class SpriteMaster:
             'cryer_1': ['people', [3, 14]],
             'cryer_2': ['people', [14, 13]],
             'tear': ['nature', [7, 10], globals.BULLET_SCALE],
-            'devil': ['people', [5, 13]]
+            'devil': ['people', [5, 13]],
+            '0': ['symbols', [2, 0]],
+            '1': ['symbols', [0, 2]],
+            '2': ['symbols', [2, 2]],
+            '3': ['symbols', [3, 1]],
+            '4': ['symbols', [0, 3]],
+            '5': ['symbols', [2, 3]],
+            '6': ['symbols', [4, 0]],
+            '7': ['symbols', [4, 2]],
+            '8': ['symbols', [0, 4]],
+            '9': ['symbols', [2, 4]],
         }
 
         # add cars:

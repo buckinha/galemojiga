@@ -25,11 +25,8 @@ FEATURES
 * Hit Animations
 
 * Power Ups
-
   * Special Guns
     * Default bubble gun: destroys enemy bullets
-    * Lollypop: explodes candy on contact
-
 
 * New Enemies
   * Trees/Plants that drop leaves

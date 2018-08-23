@@ -24,8 +24,9 @@ class MainGameContext(GameContext):
         self.players = []
         self.player_stats_list = []
         self.player_scores = {}
+        self.player_last_bonus_score = {}
         self.bonus_history = {}
-        self.bonus_at = 30
+        self.bonus_at = 100
 
         for i in range(1, self.player_count + 1):
             player = Player(game_context=self,
@@ -33,6 +34,7 @@ class MainGameContext(GameContext):
                             movement_keys=MovementKeys(i))
             self.players.append(player)
             self.player_scores[i] = 0
+            self.player_last_bonus_score[i] = 0
             self.bonus_history[i] = []
             status_obj = PlayerStats(player)
             self.player_stats_list.append(status_obj)
@@ -148,12 +150,12 @@ class MainGameContext(GameContext):
     def add_party_parrots(self):
         for player in self.players:
             p_score = self.player_scores[player.number]
-            if p_score % self.bonus_at == 0:
-                if p_score > 0:
-                    if p_score not in self.bonus_history[player.number]:
-                        self.bonus_history[player.number].append(p_score)
-                        new_parrot = random.choice([PartyParrotLeft(), PartyParrotRight()])
-                        self.effects.append(new_parrot)
+            last_bonus = self.player_last_bonus_score[player.number]
+            if p_score - last_bonus > self.bonus_at:
+                new_parrot = random.choice([PartyParrotLeft, PartyParrotRight])
+                self.effects.append(new_parrot())
+                self.player_last_bonus_score[player.number] = p_score
+
 
     def process_effects(self):
         self.add_party_parrots()

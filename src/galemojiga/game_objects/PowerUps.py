@@ -162,9 +162,9 @@ class CandyGun(SpecialGun):
 
 def pick_powerup():
     r = random.randint(0,10)
-    if r <= 11:
-        #return PowerUpHealth1
-        return CandyGun()
+    if r <= 5:
+        return PowerUpHealth1()
+        #return CandyGun()
 
     # pick a special powerup
     choices = [CandyGun, ChiliGun, SushiGun, PowerUpCoffee, PowerUpHealthMax, PowerUpDoubleGun]
