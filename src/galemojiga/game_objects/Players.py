@@ -52,8 +52,6 @@ class Player(GameObject):
         self.last_shot_time = 0
         self.health = 4
         self.max_health = 5
-        self.special_ammo = 0
-        self.special_type = globals.SPECIAL_TYPES['NONE']
         self.frame_list = ['p{}_ship'.format(self.number)]
         self.bullet_image = 'p{}_bullet'.format(self.number)
         self.firing = False
@@ -65,6 +63,8 @@ class Player(GameObject):
         self.powerup = None
         self.base_bullet_str = 1
         self.double_gun = False
+        self.special_gun = None
+
         if self.difficulty == 1:
             self.power_factor = 2
         elif self.difficulty == 2:
@@ -112,6 +112,9 @@ class Player(GameObject):
         if self.movement_key_list.up in input_dict['key_down']:
             self.firing = True
 
+        if self.movement_key_list.down in input_dict['key_up']:
+            self.firing_special = False
+
         if self.movement_key_list.down in input_dict['key_down']:
             self.firing_special = True
 
@@ -134,6 +137,10 @@ class Player(GameObject):
 
     def fire(self, input_dict):
         self.process_firing_keys(input_dict)
+        self.fire_main_gun()
+        self.fire_special_gun()
+
+    def fire_main_gun(self):
         now = time.time()
         time_since_last_shot = now - self.last_shot_time
         if time_since_last_shot >= self.fire_delay:
@@ -149,6 +156,11 @@ class Player(GameObject):
                 else:
                     bullet = self._new_bullet()
                     self.game_context.bullets.append(bullet)
+
+    def fire_special_gun(self):
+        if self.firing_special:
+            if self.special_gun is not None:
+                self.special_gun.fire()
 
     def _new_bullet(self):
         return Bullet(game_context=self.game_context,

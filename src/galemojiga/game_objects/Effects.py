@@ -81,4 +81,10 @@ class PlayerStats(GameObject):
             self.surface.blit(img, (x_offset + (i*25), y_offset))
 
     def update_special_weapon_image(self, game_context):
-        pass
+        if self.player.special_gun is not None:
+            x_offset = 10
+            y_offset = 35
+            sprite = self.player.special_gun.powerup_sprite
+            img = game_context.game_master.sprite_master.get_image_name(sprite)
+            for i in range(min(self.player.special_gun.shots, 8)):
+                self.surface.blit(img, (x_offset + (i*25), y_offset))
