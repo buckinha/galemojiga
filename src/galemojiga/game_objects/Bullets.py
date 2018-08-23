@@ -19,10 +19,11 @@ class Bullet(GameObject):
         self.launched_by = launched_by
         self.strength = strength
 
-        self.image = image
         self.dead = False
 
-    def update(self):
+        self.frame_list = [image]
+
+    def update(self, game_context):
         self.x += self.speed_vertical
         self.y += self.speed_horizontal
         self.check_dismissal()

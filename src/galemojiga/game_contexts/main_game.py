@@ -86,6 +86,7 @@ class MainGameContext(GameContext):
 
         # process environment
         self.process_environment()
+        self.process_powerups()
 
         self.draw_player_statuses()
 
@@ -168,7 +169,7 @@ class MainGameContext(GameContext):
                     enemy.hit_by(player)
             for pup in self.powerups:
                 if player.hit_rect.colliderect(pup.hit_rect):
-                    player.gain_powerup(pup)
+                    pup.affect_player(player)
 
     def process_bullet_collisions(self):
         for bullet in self.bullets:
@@ -209,11 +210,20 @@ class MainGameContext(GameContext):
 
     def process_bullets(self):
         for bullet in self.bullets:
-            bullet.update()
-            self.surface.blit(self.game_master.sprite_master.get_image_name(bullet.image), bullet.rect)
+            bullet.update(game_context=self)
+            self.surface.blit(self.game_master.sprite_master.get_image_name(bullet.current_frame), bullet.rect)
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.RED,
                                  bullet.hit_rect, 1)
+
+    def process_powerups(self):
+        for pup in self.powerups:
+            pup.update(game_context=self)
+            self.surface.blit(self.game_master.sprite_master.get_image_name(pup.current_frame), pup.rect)
+            if self.debug_on:
+                pygame.draw.rect(self.surface, colors.GREEN,
+                                 pup.hit_rect, 1)
+        self.powerups = [p for p in self.powerups if not p.dead]
 
     def process_environment(self):
         return None

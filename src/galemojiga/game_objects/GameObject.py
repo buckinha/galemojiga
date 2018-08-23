@@ -27,6 +27,8 @@ class GameObject:
         self.frame_rate = 0.5
         self.frame_last_update = 0
 
+        self.dead = False
+
     @property
     def position(self):
         return [self.x, self.y]

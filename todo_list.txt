@@ -1,5 +1,5 @@
 BUGS
-* sprites are defaulting to smiles at first. why?
+* menu not centered
 
 FEATURES
 * game layout
@@ -18,7 +18,6 @@ FEATURES
 * countdown between levels
 
 * Player Status
-  * health
   * special type and ammo (one emoji per shot?)
   * score
   * Lives left (for the team)

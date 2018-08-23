@@ -51,12 +51,14 @@ class Player(GameObject):
         self.speed_vertical_magnitude = 0
         self.last_shot_time = 0
         self.health = 4
+        self.max_health = 5
         self.special_ammo = 0
         self.special_type = globals.SPECIAL_TYPES['NONE']
         self.frame_list = ['p{}_ship'.format(self.number)]
         self.bullet_image = 'p{}_bullet'.format(self.number)
         self.firing = False
         self.firing_special = False
+        self.fire_delay = globals.FIRE_DELAY
         self.size=[19,45]
         self.hit_offset= [18, 5]
 
@@ -133,7 +135,7 @@ class Player(GameObject):
         self.process_firing_keys(input_dict)
         now = time.time()
         time_since_last_shot = now - self.last_shot_time
-        if time_since_last_shot >= globals.FIRE_DELAY:
+        if time_since_last_shot >= self.fire_delay:
             if self.firing is True:
                 bullet = Bullet(game_context=self.game_context,
                                 position=[self.x+22, self.y],

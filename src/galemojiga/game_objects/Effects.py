@@ -3,18 +3,16 @@ import pygame
 from galemojiga.game_objects.GameObject import GameObject
 import galemojiga.globals as globals
 import galemojiga.colors as colors
+from galemojiga.game_objects.PowerUps import *
 
 
-class PowerUp(GameObject):
-    def __init__(self):
-        super().__init__()
 
 class PartyParrotLeft(GameObject):
 
     def __init__(self):
         super().__init__()
         self.frame_list = ['parrot_{}'.format(i) for i in range(10)]
-        self.frame_rate = 0.1
+        self.frame_rate = 0.05
         self.dead = False
         self.speed_h = 5
         self.move_list = [self._move_left_forever]
@@ -38,7 +36,9 @@ class PartyParrotLeft(GameObject):
             if self.position[0] < self.launch_point + buffer:
                 if self.position[0] > self.launch_point - buffer:
                     self.powerup_launched = True
-                    pup = PowerUp()
+                    pup = pick_powerup()
+                    pup.x = self.x
+                    pup.y = self.y+10
                     game_context.powerups.append(pup)
 
 class PartyParrotRight(PartyParrotLeft):
@@ -77,7 +77,7 @@ class PlayerStats(GameObject):
         x_offset = 10
         y_offset = 10
         img = game_context.game_master.sprite_master.get_image_name('heart')
-        for i in range(min(self.player.health, 4)):
+        for i in range(min(self.player.health, self.player.max_health)):
             self.surface.blit(img, (x_offset + (i*25), y_offset))
 
     def update_special_weapon_image(self, game_context):
