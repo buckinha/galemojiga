@@ -95,6 +95,25 @@ class WaveCarsBoth:
         left.spawn(game_context)
         right.spawn(game_context)
 
+
+class WaveHelicoptersTrio:
+    def spawn(self, game_context):
+        for i in range(3):
+            heli = EnemyHelicopterRight()
+            heli.y = random.randint(0,100) + globals.CEILING
+            game_context.enemies.append(heli)
+
+class WaveTrain:
+    def spawn(self, game_context):
+        loco = EnemyTrainLocomotive()
+        loco.x = globals.RIGHT_WALL
+        game_context.enemies.append(loco)
+        for i in range(6):
+            car = EnemyTrainCar()
+            car.x = globals.RIGHT_WALL + ((i+1)*20)
+            game_context.enemies.append(car)
+
+
 class LevelAbstract:
     def __init__(self):
         self.spawning_complete = False
@@ -128,10 +147,10 @@ class Level1(LevelAbstract):
 
     def __init__(self):
         super().__init__()
+        self.wave_time_gap = 6
         self.waves = [WaveWinkersLeft(),
                       WaveWinkersLeft(),
                       WaveWinkersLeft(),
-                      WaveEmpty(),
                       WaveWinkersAndCryersLeft(),
                       WaveWinkersLeft(),
                       WaveWinkersAndCryersLeft()]
@@ -142,10 +161,10 @@ class Level2(LevelAbstract):
 
     def __init__(self):
         super().__init__()
+        self.wave_time_gap = 6
         self.waves = [WaveWinkersLeft(),
                       WaveWinkersAndCryersLeft(),
                       WaveCryersLeft(),
-                      WaveEmpty(),
                       WaveWinkersAndCryersLeft(),
                       Wave2Devils(),
                       WaveWinkersAndCryersLeft(),
@@ -153,11 +172,20 @@ class Level2(LevelAbstract):
                       WaveCryersLeft()]
         self.waves_spawned = [False] * len(self.waves)
 
+
 class Level3(LevelAbstract):
 
     def __init__(self):
         super().__init__()
+        self.wave_time_gap = 2
         self.waves = [WaveCarsLeft(),
                       WaveCarsRight(),
-                      WaveCarsBoth()]
+                      WaveHelicoptersTrio(),
+                      WaveTrain(),
+                      WaveCarsRight(),
+                      WaveCarsLeft(),
+                      WaveTrain(),
+                      WaveCarsBoth(),
+                      WaveTrain(),
+                      WaveHelicoptersTrio(),]
         self.waves_spawned = [False] * len(self.waves)

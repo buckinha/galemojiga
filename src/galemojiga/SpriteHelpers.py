@@ -105,8 +105,3 @@ def load_image(filename):
         print(e)
         raise SystemExit
 
-def load_party_parrot_image(frame=0):
-    path = os.path.join(IMAGE_DIR, 'parrot_{}.png'.format(frame))
-    img = load_image(path).convert()
-    img.set_colorkey(colors.TRANSPARENT)
-    return pygame.transform.smoothscale(img, (25,25))

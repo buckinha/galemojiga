@@ -8,7 +8,8 @@ from galemojiga.game_contexts.main_game import MainGameContext
 from galemojiga.game_contexts.main_menu import MainMenuContext
 from galemojiga.SpriteSheet import SpriteSheet
 import galemojiga.globals as globals
-
+import galemojiga.colors as colors
+import galemojiga.SpriteHelpers as sprites
 
 class GameMaster:
 
@@ -91,10 +92,26 @@ class SpriteMaster:
         }
 
         self.image_name_dict = {
-            'heart': {'sheet': 'symbols',
-                      'pos': [16, 10]}
-
+            'heart': ['symbols', [16, 10]],
+            'helicopter': ['travel', [1, 7]],
+            'bomb': ['objects', [3, 4]],
+            'train_0': ['travel', [2, 7]],
+            'train_1': ['travel', [3, 7]],
+            'p1_bullet': ['symbols', [11, 7], globals.BULLET_SCALE],
+            'p2_bullet': ['symbols', [7, 15], globals.BULLET_SCALE],
+            'p3_bullet': ['symbols', [8, 15], globals.BULLET_SCALE],
+            'orange_bullet': ['symbols', [11, 10], globals.BULLET_SCALE],
+            'smile': ['people', [5, 15]],
+            'wink': ['people', [6, 13]],
+            'cryer_1': ['people', [3, 14]],
+            'cryer_2': ['people', [14, 13]],
+            'tear': ['nature', [7, 10], globals.BULLET_SCALE],
+            'devil': ['people', [5, 13]]
         }
+
+        # add cars:
+        for i in range(8):
+            self.image_name_dict['car_{}'.format(i)] = ['travel', (i, 8)]
 
     def get_image(self, sheet, position, scale=globals.ENEMY_SCALE):
         if sheet in self.sprite_sheets:
@@ -104,12 +121,58 @@ class SpriteMaster:
             return None
 
     def get_image_name(self, name, scale=globals.ENEMY_SCALE):
+
+        if 'parrot' in name:
+            return self.load_party_parrot_image(name)
+
+        if '_ship' in name:
+            return self.load_player_image(name)
+
         if name in self.image_name_dict:
-            sheet = self.image_name_dict[name]['sheet']
-            pos = self.image_name_dict[name]['pos']
-            return self.get_image(sheet, pos, scale)
+            sheet = self.image_name_dict[name][0]
+            pos = self.image_name_dict[name][1]
+            if len(self.image_name_dict[name]) > 2:
+                scl = self.image_name_dict[name][2]
+            else:
+                scl = scale
+            return self.get_image(sheet, pos, scl)
         else:
             raise KeyError('Key "{}" not found in SpriteMaster name dictionary'.format(name))
+
+    def load_player_image(self, player_frame):
+        # load_base_ship
+        ship_image = self.get_image('travel', (0, 7), globals.NORMAL_SCALE)
+        ship_image = pygame.transform.rotate(ship_image, 45)
+
+        # add bullet for color
+        if player_frame == 'p1_ship':
+            bullet = self.get_image_name('p1_bullet')
+        elif player_frame == 'p2_ship':
+            bullet = self.get_image_name('p2_bullet')
+        else:
+            bullet = self.get_image_name('p3_bullet')
+        ship_image.blit(source=bullet, dest=(21, 15))
+        return ship_image
+
+    def load_party_parrot_image(self, parrot_frame):
+        path = os.path.join(globals.IMAGE_DIR, '{}.png'.format(parrot_frame))
+        img = load_image(path).convert()
+        img.set_colorkey(colors.TRANSPARENT)
+        return pygame.transform.smoothscale(img, (25,25))
+
+
+def load_image(filename):
+    try:
+        if not os.path.exists(filename):
+            print(os.listdir(os.path.split(filename)[0]))
+        img = pygame.image.load(filename)
+        img.set_colorkey(colors.TRANSPARENT)
+        return img
+
+    except pygame.error as e:
+        print('Unable to load spritesheet image: {}'.format(filename))
+        print(e)
+        raise SystemExit
 
 if __name__ == "__main__":
     game = GameMaster()

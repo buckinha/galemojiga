@@ -95,6 +95,7 @@ class GenericSwerver(Enemy):
         super().__init__()
         self.speed_h = 5
 
+
 class GenericLeftSideSwerver(GenericSwerver):
     def __init__(self):
         super().__init__()
@@ -117,6 +118,79 @@ class GenericRightSideSwerver(GenericSwerver):
             self._move_down_one_unit
         ]
 
+class GenericFaller(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.move_list = [self._move_down_forever]
+
+
+class EnemyBomb(GenericFaller):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['bomb']
+        self.strength = 3
+        self.health = 8
+
+
+class GenericDropper(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.spawn_probability = [10, 1000]
+
+    def update(self, game_context):
+        if random.randint(0, self.spawn_probability[1]) <= self.spawn_probability[0]:
+            self.spawn_drop(game_context)
+        super().update(game_context)
+
+    def spawn_drop(self, game_context):
+        pass
+
+
+class GenericDropperRight(GenericDropper):
+    def __init__(self):
+        super().__init__()
+        self.x = globals.LEFT_WALL - 25
+        self.move_list = [self._move_right_forever]
+
+
+class GenericDropperLeft(GenericDropper):
+    def __init__(self):
+        super().__init__()
+        self.x = globals.RIGHT_WALL + 25
+        self.move_list = [self._move_left_forever]
+
+
+class EnemyHelicopterRight(GenericDropperRight):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['helicopter']
+
+    def update(self, game_context):
+        super().update(game_context)
+
+    def spawn_drop(self, game_context):
+        bomb = EnemyBomb()
+        bomb.x = self.x
+        bomb.y = self.y + 20
+        game_context.enemies.append(bomb)
+
+class EnemyTrain(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.x = globals.RIGHT_WALL + 20
+        self.y = globals.FLOOR - 150
+        self.move_list = [self._move_left_forever]
+
+
+class EnemyTrainLocomotive(EnemyTrain):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['train_0']
+
+class EnemyTrainCar(EnemyTrain):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['train_1']
 
 
 class EnemyDevilLeft(GenericDiveBomberLeft):
@@ -131,7 +205,6 @@ class EnemyDevilRight(GenericDiveBomberRight):
 
     def __init__(self):
         super().__init__()
-        self.x = globals.LEFT_WALL
         self.frame_list = ['devil']
         self.health = 4
 

@@ -42,29 +42,7 @@ class MainGameContext(GameContext):
         self.bullets = []
         self.powerups = []
 
-        self.image_dict = {
-            'p1_ship': sprites.load_ship(1),
-            'p2_ship': sprites.load_ship(2),
-            'p3_ship': sprites.load_ship(3),
-            'p1_bullet': sprites.load_player_bullet(1),
-            'p2_bullet': sprites.load_player_bullet(2),
-            'p3_bullet': sprites.load_player_bullet(3),
-            'orange_bullet': sprites.load_orange_bullet(),
-            'smile': sprites.load_smile(),
-            'wink': sprites.load_wink(),
-            'cryer_1': sprites.load_cryer_1(),
-            'cryer_2': sprites.load_cryer_2(),
-            'tear': sprites.load_tear(),
-            'devil': sprites.load_devil()
-        }
-        # add cars:
-        for i in range(8):
-            self.image_dict['car_{}'.format(i)] = self.game_master.sprite_master.get_image('travel', (i, 8))
-        # add parrots:
-        for i in range(10):
-            self.image_dict['parrot_{}'.format(i)] = sprites.load_party_parrot_image(i)
-
-        self.levels = [Level1(), Level2(), Level3()]
+        self.levels = [Level3(), Level1(), Level2(), Level3()]
         self.level_index = 0
         self.new_level_delay = 5
         self.level_finish_time = 0
@@ -180,7 +158,7 @@ class MainGameContext(GameContext):
         self.add_party_parrots()
         for eff in self.effects:
             eff.update(game_context=self)
-            self.surface.blit(self.image_dict[eff.current_frame], eff.rect)
+            self.surface.blit(self.game_master.sprite_master.get_image_name(eff.current_frame), eff.rect)
 
     def process_player_collisions(self):
         for player in self.players:
@@ -213,7 +191,8 @@ class MainGameContext(GameContext):
     def process_player_inputs(self, input_dict):
         for player in self.players:
             player.update(input_dict)
-            self.surface.blit(self.image_dict[player.current_frame], player.rect)
+            self.surface.blit(self.game_master.sprite_master.get_image_name(
+                player.current_frame), player.rect)
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.BLUE,
                                  player.hit_rect, 1)
@@ -221,7 +200,9 @@ class MainGameContext(GameContext):
     def process_enemy_behavior(self):
         for enemy in self.enemies:
             enemy.update(game_context=self)
-            self.surface.blit(self.image_dict[enemy.current_frame], enemy.rect)
+            img_name = enemy.current_frame
+            self.surface.blit(self.game_master.sprite_master.get_image_name(img_name),
+                              enemy.rect)
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.RED,
                                  enemy.hit_rect, 1)
@@ -229,7 +210,7 @@ class MainGameContext(GameContext):
     def process_bullets(self):
         for bullet in self.bullets:
             bullet.update()
-            self.surface.blit(self.image_dict[bullet.image], bullet.rect)
+            self.surface.blit(self.game_master.sprite_master.get_image_name(bullet.image), bullet.rect)
             if self.debug_on:
                 pygame.draw.rect(self.surface, colors.RED,
                                  bullet.hit_rect, 1)
