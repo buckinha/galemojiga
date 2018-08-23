@@ -64,6 +64,7 @@ class Player(GameObject):
 
         self.powerup = None
         self.base_bullet_str = 1
+        self.double_gun = False
         if self.difficulty == 1:
             self.power_factor = 2
         elif self.difficulty == 2:
@@ -137,14 +138,25 @@ class Player(GameObject):
         time_since_last_shot = now - self.last_shot_time
         if time_since_last_shot >= self.fire_delay:
             if self.firing is True:
-                bullet = Bullet(game_context=self.game_context,
-                                position=[self.x+22, self.y],
-                                speed=globals.PLAYER_GUN_1_SPEED ,
-                                launched_by=self.number,
-                                strength=self.base_bullet_str*self.power_factor,
-                                image=self.bullet_image)
-                self.game_context.bullets.append(bullet)
                 self.last_shot_time = now
+                if self.double_gun:
+                    b1 = self._new_bullet()
+                    b2 = self._new_bullet()
+                    b1.x -= 7
+                    b2.x += 7
+                    self.game_context.bullets.append(b1)
+                    self.game_context.bullets.append(b2)
+                else:
+                    bullet = self._new_bullet()
+                    self.game_context.bullets.append(bullet)
+
+    def _new_bullet(self):
+        return Bullet(game_context=self.game_context,
+                       position=[self.x + 22, self.y],
+                       speed=globals.PLAYER_GUN_1_SPEED,
+                       launched_by=self.number,
+                       strength=self.base_bullet_str * self.power_factor,
+                       image=self.bullet_image)
 
     def update(self, input_dict):
         self.move(input_dict)

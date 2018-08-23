@@ -95,6 +95,7 @@ class SpriteMaster:
             'heart': ['symbols', [16, 10]],
             'heart_box': ['symbols', [6, 8]],
             'coffee': ['food', [8,9]],
+            'clinking_glasses': ['food', [8, 2]],
             'helicopter': ['travel', [1, 7]],
             'bomb': ['objects', [3, 4]],
             'train_0': ['travel', [2, 7]],

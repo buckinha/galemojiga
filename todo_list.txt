@@ -25,16 +25,9 @@ FEATURES
 * Hit Animations
 
 * Power Ups
-  * Party Parrot Droppers
-  * Health
-    * Heart for +2 health
-    * Sparkly Heart for Full Health
-  * Main Gun
-    * Diamond for blue gun (str = 2)
-    * Coffee, decreases fire delay
-    * Clinking Glasses, double gun
+
   * Special Guns
-    * Default bubble gun: captures, destroys enemy bullets
+    * Default bubble gun: destroys enemy bullets
     * Lollypop: explodes candy on contact
     * Sushi Bento: sushi-themed spread gun (5 pieces?)
       * nigiri, rice ball, tempura

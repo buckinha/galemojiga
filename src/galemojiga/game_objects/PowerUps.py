@@ -48,6 +48,14 @@ class PowerUpCoffee(PowerUp):
         if player_obj.fire_delay > globals.FAST_FIRE_DELAY:
             player_obj.fire_delay = globals.FAST_FIRE_DELAY
 
+class PowerUpDoubleGun(PowerUp):
+
+    def setup(self):
+        self.frame_list = ['clinking_glasses']
+
+    def _affect_player(self, player_obj):
+        player_obj.double_gun = True
+
 
 def pick_powerup():
     r = random.randint(0,10)
@@ -55,5 +63,5 @@ def pick_powerup():
         return PowerUpHealth1()
 
     # pick a special powerup
-    choices = [PowerUpCoffee(), PowerUpHealthMax()]
+    choices = [PowerUpCoffee(), PowerUpHealthMax(), PowerUpDoubleGun()]
     return random.choice(choices)
