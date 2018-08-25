@@ -113,12 +113,24 @@ class WaveTrain:
             car.x = globals.RIGHT_WALL + ((i+1)*20)
             game_context.enemies.append(car)
 
+class WaveCrazy4:
+    def spawn(self, game_context):
+        for i in range(4):
+            crazy = EnemyCrazyBouncer()
+            game_context.enemies.append(crazy)
+
+class TwoMonkeys:
+    def spawn(self, game_context):
+        m1 = EnemyMonkeyLeft()
+        m2 = EnemyMonkeyRight()
+        game_context.enemies.append(m1)
+        game_context.enemies.append(m2)
 
 class LevelAbstract:
     def __init__(self):
         self.spawning_complete = False
         self.complete = False
-        self.wave = 0
+        self.wave_idx = 0
         self.waves = []
         self.waves_spawned = []
         self.wave_time_gap = 5.5
@@ -132,16 +144,37 @@ class LevelAbstract:
         now = time.time()
         if now - self.wave_start_time > self.wave_time_gap:
 
-            if self.waves_spawned[self.wave] is False:
-                self.waves[self.wave].spawn(game_context)
-                self.waves_spawned[self.wave] = True
-                self.wave += 1
+            if self.waves_spawned[self.wave_idx] is False:
+                self.waves[self.wave_idx].spawn(game_context)
+                self.waves_spawned[self.wave_idx] = True
+                self.wave_idx += 1
                 self.wave_start_time = now
 
-        if self.wave >= len(self.waves):
+        if self.wave_idx >= len(self.waves):
             print('Spawning Complete')
             self.spawning_complete = True
 
+
+class TimedLevel(LevelAbstract):
+    def __init__(self):
+        super().__init__()
+        self.delay_till = 0
+        self.waves = [[None, 0]]
+
+    def update(self, game_context):
+        if self.complete or self.spawning_complete:
+            return
+
+        now = time.time()
+        if now >= self.delay_till:
+            wave, delay_seconds = self.waves[self.wave_idx]
+            wave.spawn(game_context)
+            self.delay_till = now + delay_seconds
+            self.wave_idx += 1
+
+        if self.wave_idx >= len(self.waves):
+            print('Spawning Complete')
+            self.spawning_complete = True
 
 class Level1(LevelAbstract):
 
@@ -189,3 +222,11 @@ class Level3(LevelAbstract):
                       WaveTrain(),
                       WaveHelicoptersTrio(),]
         self.waves_spawned = [False] * len(self.waves)
+
+
+class Level4(TimedLevel):
+
+    def __init__(self):
+        super().__init__()
+        self.waves = [[WaveCrazy4(), 1],
+                      [TwoMonkeys(), 4]]

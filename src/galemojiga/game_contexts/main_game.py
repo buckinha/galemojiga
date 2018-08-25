@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import *
 from galemojiga.GameContext import GameContext
 from galemojiga.game_objects.Players import Player, MovementKeys
-from galemojiga.game_contexts.levels import Level1, Level2, Level3
+from galemojiga.game_contexts.levels import Level1, Level2, Level3, Level4
 from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight, PlayerStats
 import galemojiga.SpriteHelpers as sprites
 import galemojiga.colors as colors
@@ -44,7 +44,7 @@ class MainGameContext(GameContext):
         self.bullets = []
         self.powerups = []
 
-        self.levels = [Level1(), Level2(), Level3()]
+        self.levels = [Level1(), Level2(), Level3(), Level4()]
         self.level_index = 0
         self.new_level_delay = 5
         self.level_finish_time = 0

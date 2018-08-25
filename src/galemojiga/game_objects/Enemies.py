@@ -2,8 +2,9 @@ import time
 import copy
 import random
 from galemojiga.game_objects.GameObject import GameObject
-from galemojiga.game_objects.Bullets import Bullet, BulletTear
+from galemojiga.game_objects.Bullets import Bullet, BulletTear, MonkeyBullet
 import galemojiga.globals as globals
+from galemojiga.game_objects.Players import Player
 
 ENEMY_OFFSET = 41
 
@@ -25,6 +26,9 @@ class Enemy(GameObject):
     def hit_by(self, something):
         if isinstance(something, Bullet):
             self.health -= something.strength
+        elif isinstance(something, Player):
+            self.health = 0
+
         if self.health <= 0:
             self.dead = True
 
@@ -244,3 +248,74 @@ class EnemyCryerRight(GenericLeftShimmier, GenericCryer):
     def __init__(self):
         super().__init__()
         self.x = globals.LEFT_WALL
+
+
+class GenericBouncer(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.x = random.choice([globals.LEFT_WALL, globals.RIGHT_WALL-self.size[0]])
+        self.y = random.randint(globals.CEILING, globals.CEILING + 200)
+        if self.x < globals.H_MIDDLE:
+            self.speed_h = random.randint(3,5)
+        else:
+            self.speed_h = random.randint(3,5) * -1
+        self.speed_v = random.randint(3,6)
+
+    def update(self, game_context):
+        super().update(game_context)
+        if (self.x <= globals.LEFT_WALL) and (self.speed_h < 0):
+            self.speed_h *= -1
+        if (self.x >= globals.RIGHT_WALL) and (self.speed_h > 0):
+            self.speed_h *= -1
+        if (self.y >= globals.FLOOR) and (self.speed_v > 0):
+            self.speed_v *= -1
+        if (self.y <= globals.CEILING) and (self.speed_v < 0):
+            self.speed_v *= -1
+
+        self.x += self.speed_h
+        self.y += self.speed_v
+
+class EnemyCrazyBouncer(GenericBouncer):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['crazy_1', 'crazy_2', 'crazy_3', 'crazy_4']
+        self.health = 4
+
+
+class GenericSliderLeft(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.move_list = [self._move_left_to_wall, self._move_right_to_wall]
+        self.x = globals.RIGHT_WALL
+
+class GenericSliderRight(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.move_list = [self._move_right_to_wall, self._move_left_to_wall]
+        self.x = globals.LEFT_WALL
+
+class MonkeyBase(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.health = 10
+        self.spawn_probability = [10,1000]
+        self.frame_list = ['monkey_1', 'monkey_2', 'monkey_3']
+
+    def update(self, game_context):
+        if random.randint(0, self.spawn_probability[1]) <= self.spawn_probability[0]:
+            self.spawn_drop(game_context)
+        super().update(game_context)
+
+    def spawn_drop(self, game_context):
+        pos = [self.x, self.y + 25]
+        game_context.bullets.append(MonkeyBullet(game_context, pos))
+
+class EnemyMonkeyLeft(GenericSliderLeft, MonkeyBase):
+    def __init__(self):
+        super().__init__()
+
+
+class EnemyMonkeyRight(GenericSliderRight, MonkeyBase):
+    def __init__(self):
+        super().__init__()
+

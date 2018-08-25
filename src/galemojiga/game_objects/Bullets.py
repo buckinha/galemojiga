@@ -118,3 +118,11 @@ class CandyBullet(BulletShatter):
         self.shard_speed_v = 4
         self.auto_shatter = True
         self.auto_shatter_at = globals.CEILING
+
+class MonkeyBullet(Bullet):
+    def __init__(self, game_context, position):
+        img = random.choice(['coconut', 'banana'])
+        spd = [random.randint(-3,3), 8]
+        super().__init__(game_context, position, spd, 'enemy',
+                 strength=1, image=img)
+
