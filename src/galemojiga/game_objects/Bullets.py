@@ -77,6 +77,8 @@ class BulletShatter(Bullet):
         self.shard_speed_v = 10
         self.auto_shatter = False
         self.auto_shatter_at = globals.CEILING + 50
+        self.shard_expire_ticks = 12
+        self.shard_immune_ticks = 5
 
     def _random_shard_speed(self):
         spd_v = random.choice([-1, 0, 1]) * self.shard_speed_v
@@ -100,8 +102,8 @@ class BulletShatter(Bullet):
                            launched_by=self.launched_by,
                            strength=self.shard_strength,
                            image=self.shard_image)
-            shard.immune_ticks = 5
-            shard.expire_ticks = 12
+            shard.immune_ticks = self.shard_immune_ticks
+            shard.expire_ticks = self.shard_expire_ticks
             shard.size = globals.ENEMY_SCALE
             self.game_context.bullets.append(shard)
         super().hit_by(anything)
@@ -127,3 +129,17 @@ class MonkeyBullet(Bullet):
                  strength=1, image=img)
         self.size = globals.ENEMY_SCALE
 
+class SantaBullet(BulletShatter):
+    def __init__(self, game_context, position, speed, launched_by):
+        super().__init__(game_context, position, speed, launched_by,
+                 strength=1, image='present')
+        present_list = ['socks', 'paint_pallet', 'book', 'racecar', 'football']
+        self.shard_image = random.choice(present_list)
+        self.shard_strength = 1
+        self.shards = 4
+        self.shard_speed_h = 4
+        self.shard_speed_v = 4
+        self.auto_shatter = True
+        self.auto_shatter_at = globals.FLOOR - 50
+        self.shard_expire_ticks = 25
+        self.shard_immune_ticks = 0

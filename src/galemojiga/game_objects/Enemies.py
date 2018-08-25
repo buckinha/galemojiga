@@ -2,7 +2,7 @@ import time
 import copy
 import random
 from galemojiga.game_objects.GameObject import GameObject
-from galemojiga.game_objects.Bullets import Bullet, BulletTear, MonkeyBullet
+from galemojiga.game_objects.Bullets import Bullet, BulletTear, MonkeyBullet, SantaBullet
 import galemojiga.globals as globals
 from galemojiga.game_objects.Players import Player
 
@@ -320,6 +320,19 @@ class EnemyMonkeyLeft(GenericSliderLeft, MonkeyBase):
 class EnemyMonkeyRight(GenericSliderRight, MonkeyBase):
     def __init__(self):
         super().__init__()
+
+class EnemySanta(GenericSliderLeft, MonkeyBase):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['santa']
+        self.health = 5
+        self.spawn_probability = [5, 1000]
+    def spawn_drop(self, game_context):
+        pos = [self.x, self.y + 25]
+        for i in range(2):
+            spd = [i*2 - 2, 3]
+            present = SantaBullet(game_context, pos, spd, 'enemy')
+            game_context.bullets.append(present)
 
 class Zombie1(GenericFaller):
     def __init__(self):

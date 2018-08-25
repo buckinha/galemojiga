@@ -71,12 +71,25 @@ class SpriteMaster:
             'bat': ['nature', [3, 11]],
             'zombie_1': ['people', [18, 14]],
             'zombie_2': ['people', [18, 15]],
-            'ghost': ['people', [9, 11]]
+            'ghost': ['people', [9, 11]],
+            'santa': ['people', [0, 1]],
+            'snowflake': ['nature', [7, 12], globals.BULLET_SCALE],
+            'penguin': ['nature', [9,8]],
+            'snowman_1': ['nature', [3,12]],
+            'snowman_2': ['nature', [12,10]],
+            'cloud': ['nature', [12, 9]],
+            'present': ['objects', [0,1]],
+            'football': ['activity', [4,5]],
+            'paint_pallet': ['activity', [0,2]],
+            'socks': ['people', [4, 18]],
+            'book': ['objects', [0, 7]],
+            'racecar': ['travel', [4,1]]
         }
 
         # add cars:
         for i in range(8):
             self.image_name_dict['car_{}'.format(i)] = ['travel', (i, 8)]
+
 
     def get_image(self, sheet, position, scale=globals.ENEMY_SCALE):
         if sheet in self.sprite_sheets:

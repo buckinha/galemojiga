@@ -126,6 +126,13 @@ class WaveTwoMonkeys:
         game_context.enemies.append(m1)
         game_context.enemies.append(m2)
 
+class WaveTwoSantas:
+    def spawn(self, game_context):
+        for i in range(2):
+            santa = EnemySanta()
+            santa.x = globals.H_MIDDLE + i*100
+            game_context.enemies.append(santa)
+
 class WaveZombieWall:
     def spawn(self, game_context):
         for i in range(len(FULL_ROW_POSITIONS)):
@@ -288,3 +295,8 @@ class Level5(TimedLevel):
                       [WaveZombieWall(), 2],
                       [WaveFourGhosts(), 2],
                       [WaveZombieWall(), 4]]
+
+class Level6(TimedLevel):
+    def __init__(self):
+        super().__init__()
+        self.waves = [[WaveTwoSantas(), 2]]
