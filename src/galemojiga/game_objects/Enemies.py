@@ -104,8 +104,9 @@ class GenericLeftSideSwerver(GenericSwerver):
     def __init__(self):
         super().__init__()
         self.x = globals.LEFT_WALL
+        self.units_right = 5
         self.move_list = [
-            [self._move_right_to_unit, 5],
+            [self._move_right_to_unit, self.units_right],
             self._move_down_one_unit,
             self._move_left_to_wall,
             self._move_down_one_unit
@@ -115,8 +116,9 @@ class GenericRightSideSwerver(GenericSwerver):
     def __init__(self):
         super().__init__()
         self.x = globals.RIGHT_WALL
+        self.units_left = 5
         self.move_list = [
-            [self._move_left_to_unit, globals.H_UNITS - 5],
+            [self._move_left_to_unit, globals.H_UNITS - self.units_left],
             self._move_down_one_unit,
             [self._move_right_to_unit, globals.H_UNITS],
             self._move_down_one_unit
@@ -319,3 +321,71 @@ class EnemyMonkeyRight(GenericSliderRight, MonkeyBase):
     def __init__(self):
         super().__init__()
 
+class Zombie1(GenericFaller):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['zombie_1']
+        self.speed_v = 1
+        self.health = 12
+
+class Zombie2(GenericFaller):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['zombie_2']
+        self.speed_v = 1
+        self.health = 12
+
+class EnemyBatLeft(GenericLeftSideSwerver):
+    def __init__(self):
+        super().__init__()
+        self.units_right = 7
+        self.frame_list = ['bat']
+        self.health = 1
+        self.speed_v = 4
+        self.speed_h = 4
+
+
+class EnemyBatRight(GenericRightSideSwerver):
+    def __init__(self):
+        super().__init__()
+        self.units_left = 7
+        self.frame_list = ['bat']
+        self.health = 1
+        self.speed_v = 4
+        self.speed_h = 4
+
+
+class VampireBase(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.health = 10
+        self.spawn_probability = [20,1000]
+        self.frame_list = random.choice([['vampire_1'], ['vampire_2']])
+
+    def update(self, game_context):
+        if random.randint(0, self.spawn_probability[1]) <= self.spawn_probability[0]:
+            self.spawn_drop(game_context)
+        super().update(game_context)
+
+    def spawn_drop(self, game_context):
+        pos = [self.x, self.y + 25]
+        bat = random.choice([EnemyBatLeft, EnemyBatRight])()
+        bat.position = pos
+        game_context.enemies.append(bat)
+
+
+class VampireLeft(GenericSliderLeft, VampireBase):
+    def __init__(self):
+        super().__init__()
+
+class VampireRight(GenericSliderLeft, VampireBase):
+    def __init__(self):
+        super().__init__()
+
+class EnemyGhost(GenericBouncer):
+    def __init__(self):
+        super().__init__()
+        self.speed_h -= 1
+        self.speed_v -= 1
+        self.health = 5
+        self.frame_list = ['ghost']

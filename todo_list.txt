@@ -12,29 +12,18 @@ FEATURES
   * Show Player score(s)
   * Exit to Main Menu on interaction
 
-* score effect
-  * give it a number, it gives back an image of the score
-
 * countdown between levels
 
 * Player Status
-  * special type and ammo (one emoji per shot?)
-  * score
   * Lives left (for the team)
 
 * Hit Animations
 
-* Power Ups
-  * Special Guns
-    * Default bubble gun: destroys enemy bullets
 
 * New Enemies
-  * Monkeys that throw coconuts and bananas
-  * Crazy-face emoji, maybe bouncing around a lot
   * Selfie Emoji?
   * Trees/Plants that drop leaves
   * Sportsballs that bounce
   * Redface that swears and drops bombs
   * Bombs that explode
-  * Vampires that send bats
   * Snowmen and Santas that drop snowflakes

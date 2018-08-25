@@ -55,6 +55,7 @@ class SpriteMaster:
             'coconut': ['food', [0, 9]],
             'banana': ['food', [1, 3]],
             'selfie': ['people', [1,17]],
+            'poop': ['people', [10,12]],
             '0': ['symbols', [2, 0]],
             '1': ['symbols', [0, 2]],
             '2': ['symbols', [2, 2]],
@@ -65,6 +66,12 @@ class SpriteMaster:
             '7': ['symbols', [4, 2]],
             '8': ['symbols', [0, 4]],
             '9': ['symbols', [2, 4]],
+            'vampire_1': ['people', [18,2]],
+            'vampire_2': ['people', [18,3]],
+            'bat': ['nature', [3, 11]],
+            'zombie_1': ['people', [18, 14]],
+            'zombie_2': ['people', [18, 15]],
+            'ghost': ['people', [9, 11]]
         }
 
         # add cars:

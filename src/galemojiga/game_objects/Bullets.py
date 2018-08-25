@@ -122,7 +122,8 @@ class CandyBullet(BulletShatter):
 class MonkeyBullet(Bullet):
     def __init__(self, game_context, position):
         img = random.choice(['coconut', 'banana'])
-        spd = [random.randint(-3,3), 8]
+        spd = [random.randint(-3,3), 6]
         super().__init__(game_context, position, spd, 'enemy',
                  strength=1, image=img)
+        self.size = globals.ENEMY_SCALE
 

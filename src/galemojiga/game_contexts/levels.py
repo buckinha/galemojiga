@@ -2,7 +2,7 @@ import time
 import galemojiga.globals as globals
 from galemojiga.game_objects.Enemies import *
 
-FULL_ROW_POSITIONS = [[i*globals.UNIT, globals.CEILING] for i in range(globals.H_UNITS)]
+FULL_ROW_POSITIONS = [[globals.LEFT_WALL + i*globals.UNIT, globals.CEILING] for i in range(globals.H_UNITS)]
 
 class WaveEmpty:
 
@@ -119,12 +119,47 @@ class WaveCrazy4:
             crazy = EnemyCrazyBouncer()
             game_context.enemies.append(crazy)
 
-class TwoMonkeys:
+class WaveTwoMonkeys:
     def spawn(self, game_context):
         m1 = EnemyMonkeyLeft()
         m2 = EnemyMonkeyRight()
         game_context.enemies.append(m1)
         game_context.enemies.append(m2)
+
+class WaveZombieWall:
+    def spawn(self, game_context):
+        for i in range(len(FULL_ROW_POSITIONS)):
+            if i%2 == 0:
+                zombie = Zombie1()
+            else:
+                zombie = Zombie2()
+            zombie.position = FULL_ROW_POSITIONS[i]
+            zombie.y -= 20
+            game_context.enemies.append(zombie)
+
+class WaveThreeVampires:
+    def spawn(self, game_context):
+        vamp_l = VampireLeft()
+        vamp_r = VampireRight()
+        vamp_m = VampireRight()
+        vamp_m.x = globals.H_MIDDLE
+        game_context.enemies.append(vamp_l)
+        game_context.enemies.append(vamp_r)
+        game_context.enemies.append(vamp_m)
+
+class WaveFourGhosts:
+    def spawn(self, game_context):
+        for i in range(4):
+            ghost = EnemyGhost()
+            game_context.enemies.append(ghost)
+
+class WaveRandomPoop:
+    def spawn(self, game_context):
+        for i in range(2):
+            poop = GenericFaller()
+            poop.position = random.choice(FULL_ROW_POSITIONS)
+            poop.frame_list = ['poop']
+            game_context.enemies.append(poop)
 
 class LevelAbstract:
     def __init__(self):
@@ -229,4 +264,27 @@ class Level4(TimedLevel):
     def __init__(self):
         super().__init__()
         self.waves = [[WaveCrazy4(), 1],
-                      [TwoMonkeys(), 4]]
+                      [WaveTwoMonkeys(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveTwoMonkeys(), 4],
+                      [WaveCrazy4(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1],
+                      [WaveRandomPoop(), 1]]
+
+
+class Level5(TimedLevel):
+    def __init__(self):
+        super().__init__()
+        self.waves = [[WaveZombieWall(), 2],
+                      [WaveThreeVampires(), 2],
+                      [WaveZombieWall(), 2],
+                      [WaveFourGhosts(), 2],
+                      [WaveZombieWall(), 4]]
