@@ -126,12 +126,6 @@ class WaveTwoMonkeys:
         game_context.enemies.append(m1)
         game_context.enemies.append(m2)
 
-class WaveTwoSantas:
-    def spawn(self, game_context):
-        for i in range(2):
-            santa = EnemySanta()
-            santa.x = globals.H_MIDDLE + i*100
-            game_context.enemies.append(santa)
 
 class WaveZombieWall:
     def spawn(self, game_context):
@@ -167,6 +161,49 @@ class WaveRandomPoop:
             poop.position = random.choice(FULL_ROW_POSITIONS)
             poop.frame_list = ['poop']
             game_context.enemies.append(poop)
+
+
+class WaveTwoSantas:
+    def spawn(self, game_context):
+        for i in range(2):
+            santa = EnemySanta()
+            santa.x = globals.H_MIDDLE + i*100
+            game_context.enemies.append(santa)
+
+
+class WaveBlockadeOf:
+    def __init__(self, enemy_type):
+        self.enemy_type = enemy_type
+
+    def spawn(self, game_context):
+        rows = 5
+        row_buffer = globals.CEILING_BUFFER + globals.UNIT * 2
+        for r in range(rows):
+            for c in range(1, globals.H_UNITS -1):
+                e = self.enemy_type()
+                e.x = (c * globals.UNIT) - 500
+                e.y = (r * globals.UNIT) + row_buffer
+                e.speed_h = 10
+                e.speed_v = 2
+                e.march_to_column = c
+                e.move_delay = 3 * (rows - r)
+                e.reassign_move_list()
+                game_context.enemies.append(e)
+
+
+class WaveSnowmanBlockade(WaveBlockadeOf):
+    def __init__(self):
+        super().__init__(EnemySnowman)
+
+
+class WavePenguins:
+    def spawn(self, game_context):
+        for i in range(3):
+            penguin = EnemyPenguin()
+            penguin.x -= i*35
+            penguin.y = globals.get_v_unit_y_val(i + 1)
+            game_context.enemies.append(penguin)
+
 
 class LevelAbstract:
     def __init__(self):
@@ -296,11 +333,15 @@ class Level5(TimedLevel):
                       [WaveFourGhosts(), 2],
                       [WaveZombieWall(), 4]]
 
-class Level6(TimedLevel):
+class LevelSanta(TimedLevel):
     def __init__(self):
         super().__init__()
-        self.waves = [[WaveTwoSantas(), 2]]
+        self.waves = [[WaveSnowmanBlockade(), 1],
+                      [WaveTwoSantas(), 4],
+                      [WavePenguins(), 10],
+                      [WavePenguins(), 4],
+                      [WaveSnowmanBlockade(), 2]]
 
 
 
-LEVEL_LIST = [Level1, Level2, Level3, Level4, Level5, Level6]
+LEVEL_LIST = [LevelSanta, Level1, Level2, Level3, Level4, Level5, LevelSanta]

@@ -78,6 +78,7 @@ class SpriteMaster:
             'snowman_1': ['nature', [3,12]],
             'snowman_2': ['nature', [12,10]],
             'cloud': ['nature', [12, 9]],
+            'fish': ['nature', [9,0], globals.BULLET_SCALE],
             'present': ['objects', [0,1]],
             'football': ['activity', [4,5]],
             'paint_pallet': ['activity', [0,2]],

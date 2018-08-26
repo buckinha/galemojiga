@@ -7,7 +7,7 @@ class Bullet(GameObject):
                  strength, image='orange_bullet'):
         super().__init__()
         self.position = position
-        self.size = [12,12]
+        self.size = globals.BULLET_SCALE
 
         # if speed is a tuple or list, use both items, otherwise, assume it's numeric
         if hasattr(speed, '__iter__'):
@@ -62,6 +62,18 @@ class BulletTear(Bullet):
 
         self.size = [14, 17]
         self.hit_offset = [4, 2]
+
+
+class BulletFish(Bullet):
+    def __init__(self, game_context, position, speed=(0,5),
+                 launched_by='enemy',
+                 strength=1, image='fish'):
+        self.size = globals.BULLET_SCALE
+        super().__init__(game_context=game_context,
+                         position=position, speed=speed,
+                         launched_by=launched_by,
+                         strength=strength, image=image)
+
 
 
 class BulletShatter(Bullet):
@@ -133,6 +145,7 @@ class SantaBullet(BulletShatter):
     def __init__(self, game_context, position, speed, launched_by):
         super().__init__(game_context, position, speed, launched_by,
                  strength=1, image='present')
+        self.size = globals.ENEMY_SCALE
         present_list = ['socks', 'paint_pallet', 'book', 'racecar', 'football']
         self.shard_image = random.choice(present_list)
         self.shard_strength = 1

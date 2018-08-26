@@ -9,6 +9,12 @@ RIGHT_BUFFER = 50
 CEILING_BUFFER = 50
 FLOOR_BUFFER = 100
 
+def get_h_unit_x_val(h_unit):
+    return h_unit * UNIT + LEFT_BUFFER
+
+def get_v_unit_y_val(v_unit):
+    return v_unit * UNIT + CEILING_BUFFER
+
 PLAY_WIDTH = UNIT * H_UNITS
 PLAY_HEIGHT = UNIT * V_UNITS
 

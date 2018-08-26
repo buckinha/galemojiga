@@ -2,7 +2,7 @@ import time
 import copy
 import random
 from galemojiga.game_objects.GameObject import GameObject
-from galemojiga.game_objects.Bullets import Bullet, BulletTear, MonkeyBullet, SantaBullet
+from galemojiga.game_objects.Bullets import *
 import galemojiga.globals as globals
 from galemojiga.game_objects.Players import Player
 
@@ -321,18 +321,6 @@ class EnemyMonkeyRight(GenericSliderRight, MonkeyBase):
     def __init__(self):
         super().__init__()
 
-class EnemySanta(GenericSliderLeft, MonkeyBase):
-    def __init__(self):
-        super().__init__()
-        self.frame_list = ['santa']
-        self.health = 5
-        self.spawn_probability = [5, 1000]
-    def spawn_drop(self, game_context):
-        pos = [self.x, self.y + 25]
-        for i in range(2):
-            spd = [i*2 - 2, 3]
-            present = SantaBullet(game_context, pos, spd, 'enemy')
-            game_context.bullets.append(present)
 
 class Zombie1(GenericFaller):
     def __init__(self):
@@ -402,3 +390,67 @@ class EnemyGhost(GenericBouncer):
         self.speed_v -= 1
         self.health = 5
         self.frame_list = ['ghost']
+
+class EnemySanta(GenericSliderLeft, MonkeyBase):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['santa']
+        self.health = 5
+        self.spawn_probability = [5, 1000]
+
+    def spawn_drop(self, game_context):
+        pos = [self.x, self.y + 25]
+        for i in range(2):
+            spd = [i*2 - 2, 3]
+            present = SantaBullet(game_context, pos, spd, 'enemy')
+            game_context.bullets.append(present)
+
+class GenericMarcher(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.march_to_column = 0
+        self.move_delay = 1
+        self.move_list = self.reassign_move_list()
+
+    def reassign_move_list(self):
+        self.move_list = [
+            [self._move_right_to_unit, self.march_to_column],
+            [self._wait, self.move_delay],
+            self._move_down_forever
+        ]
+
+class EnemySnowman(GenericMarcher):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = [random.choice(['snowman_1', 'snowman_2'])]
+
+class GenericStraferRight(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.shoot_chance = 5
+        self.shoot_chance_out_of = 1000
+        self.last_shot_time = 0
+        self.move_list = [self._move_right_forever]
+        self.bullet_type = BulletTear
+        self.bullet_speed = [0,10]
+        self.x = globals.LEFT_WALL - 50
+
+    def update(self, game_context):
+        super().update(game_context)
+        if random.randint(0, self.shoot_chance_out_of) <= self.shoot_chance:
+            bullet = self.bullet_type(game_context=game_context,
+                                      position=[self.x, self.y],
+                                      speed = self.bullet_speed,
+                                      launched_by='enemy')
+
+            game_context.bullets.append(bullet)
+
+
+class EnemyPenguin(GenericStraferRight):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['penguin']
+        self.health = 3
+        self.bullet_type = BulletFish
+        self.shoot_chance = 15
+        self.shoot_chance_out_of = 1000

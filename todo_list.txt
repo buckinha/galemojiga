@@ -4,7 +4,6 @@ BUGS
 * can't fire special and main gun simultaneously. Probably and elif statement
 
 
-
 FEATURES
 * game layout
 
