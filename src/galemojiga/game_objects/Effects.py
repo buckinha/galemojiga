@@ -49,6 +49,22 @@ class PartyParrotRight(PartyParrotLeft):
         self.x = globals.LEFT_WALL
 
 
+class PlayerLivesDisplay(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.size = [40, 160]
+        self.surface = pygame.Surface(self.rect.size)
+        self.x = globals.RIGHT_WALL
+        self.y = globals.FLOOR - 50
+        self.surface.set_colorkey(colors.TRANSPARENT)
+
+    def update(self, game_context):
+        self.surface.fill(colors.BLACK)
+        img = game_context.game_master.sprite_master.get_image_name('generic_ship')
+        for i in range(min(game_context.extra_lives, 4)):
+            self.surface.blit(img, (0, (2-i)*40))
+
+
 class PlayerStats(GameObject):
 
     def __init__(self, player_obj):
@@ -88,7 +104,10 @@ class PlayerStats(GameObject):
         x_offset = 10
         y_offset = 10
         sprites_to_draw = min(self.player.health, self.player.max_health)
-        img = game_context.game_master.sprite_master.get_image_name('heart')
+        if self.player.invulnerable:
+            img = game_context.game_master.sprite_master.get_image_name('silver_heart')
+        else:
+            img = game_context.game_master.sprite_master.get_image_name('heart')
         for i in range(sprites_to_draw):
             self.surface.blit(img, (x_offset + ((4-i)*25), y_offset))
 

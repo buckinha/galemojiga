@@ -19,6 +19,7 @@ class SpriteMaster:
 
         self.image_name_dict = {
             'heart': ['symbols', [16, 10]],
+            'silver_heart': ['symbols', [7, 12]],
             'heart_box': ['symbols', [6, 8]],
             'coffee': ['food', [8,9]],
             'clinking_glasses': ['food', [8, 2]],
@@ -84,7 +85,8 @@ class SpriteMaster:
             'paint_pallet': ['activity', [0,2]],
             'socks': ['people', [4, 18]],
             'book': ['objects', [0, 7]],
-            'racecar': ['travel', [4,1]]
+            'racecar': ['travel', [4,1]],
+            'recycle': ['symbols', [2, 15], [40,40]]
         }
 
         # add cars:
@@ -124,13 +126,21 @@ class SpriteMaster:
         ship_image = pygame.transform.rotate(ship_image, 45)
 
         # add bullet for color
+        draw_bullet = True
         if player_frame == 'p1_ship':
             bullet = self.get_image_name('p1_bullet')
         elif player_frame == 'p2_ship':
             bullet = self.get_image_name('p2_bullet')
-        else:
+        elif player_frame == 'p3_ship':
             bullet = self.get_image_name('p3_bullet')
-        ship_image.blit(source=bullet, dest=(21, 15))
+        else:
+            # if asked for "generic_ship", just don't add the bullet
+            draw_bullet = False
+            bullet = None
+
+        if draw_bullet:
+            ship_image.blit(source=bullet, dest=(21, 15))
+
         return ship_image
 
     def load_party_parrot_image(self, parrot_frame):

@@ -52,7 +52,10 @@ class Player(GameObject):
         self.last_shot_time = 0
         self.health = 4
         self.max_health = 5
-        self.frame_list = ['p{}_ship'.format(self.number)]
+        self.normal_frames = ['p{}_ship'.format(self.number)]
+        self.invulnerable_frames = ['p{}_ship'.format(self.number), 'recycle']
+        self.frame_list = self.normal_frames
+        self.frame_rate = 0.1
         self.bullet_image = 'p{}_bullet'.format(self.number)
         self.firing = False
         self.firing_special = False
@@ -71,6 +74,9 @@ class Player(GameObject):
             self.power_factor = 1
         else:
             self.power_factor = 0.5
+
+        self.invulnerable = False
+        self.invulnerable_expires_at = 0
 
 
     @property
@@ -174,15 +180,36 @@ class Player(GameObject):
                        image=self.bullet_image)
 
     def update(self, input_dict):
+        super().update(self.game_context)
         self.move(input_dict)
         self.fire(input_dict)
 
     def hit_by(self, enemy_or_bullet):
+        if self.invulnerable:
+            return
+
         if hasattr(enemy_or_bullet, 'strength'):
             self.health -= enemy_or_bullet.strength
             if self.health <= 0:
-                self.game_context.trigger_game_over()
-
+                self.game_context.lose_one_life()
+                self.health = 4
+                self.make_invulnerable(seconds=1.5)
 
     def gain_powerup(self, powerup_obj):
         self.powerup = powerup_obj
+
+
+    def make_invulnerable(self, seconds):
+        self.invulnerable = True
+        self.invulnerable_expires_at = time.time() + seconds
+        self.frame_list = self.invulnerable_frames
+
+    def expire_invulnerability(self):
+        self.invulnerable = False
+        self.invulnerable_expires_at = 0
+        self.frame_list = self.normal_frames
+
+    def check_invulnerability(self):
+        if self.invulnerable:
+            if time.time() > self.invulnerable_expires_at:
+                self.expire_invulnerability()

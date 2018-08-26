@@ -5,8 +5,7 @@ from pygame.locals import *
 from galemojiga.GameContext import GameContext
 from galemojiga.game_objects.Players import Player, MovementKeys
 from galemojiga.game_contexts.levels import LEVEL_LIST
-from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight, PlayerStats
-import galemojiga.SpriteHelpers as sprites
+from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight, PlayerStats, PlayerLivesDisplay
 import galemojiga.colors as colors
 import galemojiga.globals as globals
 
@@ -32,12 +31,16 @@ class MainGameContext(GameContext):
             player = Player(game_context=self,
                             number=i,
                             movement_keys=MovementKeys(i))
+            player.x += (i-1) * 30
             self.players.append(player)
             self.player_scores[i] = 0
             self.player_last_bonus_score[i] = 0
             self.bonus_history[i] = []
             status_obj = PlayerStats(player)
             self.player_stats_list.append(status_obj)
+
+        self.extra_lives = 3
+        self.ExtraLifeDisplay = PlayerLivesDisplay()
 
         self.effects = []
         self.enemies = []
@@ -72,6 +75,9 @@ class MainGameContext(GameContext):
 
         # process effects
         self.process_effects()
+
+        # check player invulnerability
+        self.check_player_invulnerability()
 
         # process collisions
         self.process_player_collisions()
@@ -236,8 +242,18 @@ class MainGameContext(GameContext):
             # the stats objects update their own surface, so just blit it
             self.surface.blit(stats.surface, stats.rect)
 
+        self.ExtraLifeDisplay.update(game_context=self)
+        r = self.ExtraLifeDisplay.rect
+        self.surface.blit(self.ExtraLifeDisplay.surface, r)
 
+    def lose_one_life(self):
+        self.extra_lives -= 1
+        if self.extra_lives < 0:
+            self.quit_to_menu()
 
-
+    def check_player_invulnerability(self):
+        for p in self.players:
+            if p.invulnerable:
+                p.check_invulnerability()
 
 
