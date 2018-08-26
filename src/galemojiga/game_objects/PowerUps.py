@@ -47,8 +47,7 @@ class PowerUpCoffee(PowerUp):
         self.frame_list = ['coffee']
 
     def _affect_player(self, player_obj):
-        if player_obj.fire_delay > globals.FAST_FIRE_DELAY:
-            player_obj.fire_delay = globals.FAST_FIRE_DELAY
+        player_obj.coffee_gun = True
 
 
 class PowerUpDoubleGun(PowerUp):
@@ -160,20 +159,33 @@ class CandyGun(SpecialGun):
         candy.size = globals.ENEMY_SCALE
         self.player.game_context.bullets.append(candy)
 
+
 def pick_powerup(game_context):
     r = random.randint(0,10)
 
     health_powerups = [PowerUpHealth1, PowerUpHealth1, PowerUpHealth1, PowerUpHealthMax]
-    gun_powerups = [CandyGun, ChiliGun, SushiGun, PowerUpCoffee, PowerUpDoubleGun]
+    gun_powerups = [CandyGun, ChiliGun, SushiGun]
+
 
     missing_health_total = 0
+    coffee_total = 0
+    doublegun_total = 0
     for p in game_context.players:
         missing_health_total += (p.max_health - p.health)
+        if p.coffee_gun:
+            coffee_total += 1
+        if p.double_gun:
+            doublegun_total += 1
 
     if (missing_health_total / len(game_context.players)) >= 1:
         pup_list = gun_powerups + health_powerups
     else:
         pup_list = gun_powerups
+
+    if coffee_total < len(game_context.players):
+        pup_list.append(PowerUpCoffee)
+    if doublegun_total < len(game_context.players):
+        pup_list.append(PowerUpDoubleGun)
 
     # pick a special powerup
     pup = random.choice(pup_list)

@@ -300,3 +300,7 @@ class Level6(TimedLevel):
     def __init__(self):
         super().__init__()
         self.waves = [[WaveTwoSantas(), 2]]
+
+
+
+LEVEL_LIST = [Level1, Level2, Level3, Level4, Level5, Level6]

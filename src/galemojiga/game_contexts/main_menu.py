@@ -12,14 +12,20 @@ class MainMenuContext(GameContext):
     def __init__(self, game_master, size, player_count=1, debug_font=None):
         super().__init__(game_master, size)
 
-        self.selector_positions = {'players_1': (100, 200),
-                                   'players_2': (100, 250),
-                                   'players_3': (100, 300),
-                                   'difficulty_1': (300, 200),
-                                   'difficulty_2': (300, 250),
-                                   'difficulty_3': (300, 300),
-                                   'start': (100, 370),
-                                   'quit': (300, 370)}
+        col1_x = 100 - 30
+        col2_x = 300 - 30
+        row1_y = 200
+        row2_y = 250
+        row3_y = 300
+        button_y = 370
+        self.selector_positions = {'players_1': (col1_x, row1_y),
+                                   'players_2': (col1_x, row2_y),
+                                   'players_3': (col1_x, row3_y),
+                                   'difficulty_1': (col2_x, row1_y),
+                                   'difficulty_2': (col2_x, row2_y),
+                                   'difficulty_3': (col2_x, row3_y),
+                                   'start': (col1_x, button_y),
+                                   'quit': (col2_x, button_y)}
 
         self.selector_position = 'start'
 

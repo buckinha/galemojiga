@@ -54,7 +54,7 @@ class PlayerStats(GameObject):
     def __init__(self, player_obj):
         super().__init__()
         self.player = player_obj
-        self.size = [(globals.WINDOW_WIDTH/3)-5, 95]
+        self.size = [(globals.WINDOW_WIDTH/3)-25, 95]
         self.surface = pygame.Surface(self.rect.size)
         self.x = (self.player.number - 1) * (self.size[0]) + (4 * self.player.number)
         self.y = globals.FLOOR
@@ -63,10 +63,10 @@ class PlayerStats(GameObject):
 
     def update_surface(self, game_context):
         self.surface.fill(color=colors.BLACK)
-        self.draw_border()
         self.update_health_image(game_context)
         self.update_score_image(game_context)
         self.update_special_weapon_image(game_context)
+        self.draw_border()
 
     def draw_border(self):
         pygame.draw.rect(self.surface, colors.BLUE, ((0,0), self.size), 3)
@@ -81,18 +81,21 @@ class PlayerStats(GameObject):
     def update_health_image(self, game_context):
         x_offset = 10
         y_offset = 10
+        sprites_to_draw = min(self.player.health, self.player.max_health)
         img = game_context.game_master.sprite_master.get_image_name('heart')
-        for i in range(min(self.player.health, self.player.max_health)):
-            self.surface.blit(img, (x_offset + (i*25), y_offset))
+        for i in range(sprites_to_draw):
+            self.surface.blit(img, (x_offset + ((4-i)*25), y_offset))
 
     def update_special_weapon_image(self, game_context):
         if self.player.special_gun is not None:
             x_offset = 10
             y_offset = 35
+            sprites_to_draw = min(int(self.player.special_gun.shots), 5)
+            r_justify_offset = (5 - sprites_to_draw) * 25
             sprite = self.player.special_gun.powerup_sprite
             img = game_context.game_master.sprite_master.get_image_name(sprite)
-            for i in range(min(int(self.player.special_gun.shots), 8)):
-                self.surface.blit(img, (x_offset + (i*25), y_offset))
+            for i in range(sprites_to_draw):
+                self.surface.blit(img, (x_offset + r_justify_offset + (i*25), y_offset))
 
 
 class Scoreboard(GameObject):
@@ -118,7 +121,15 @@ class Scoreboard(GameObject):
     def get_scoreboard(self, score, game_context):
         self.surface.fill(color=colors.BLACK)
         digits = self.get_digits(score)
+        w = globals.ENEMY_SCALE[0]
+        h = globals.ENEMY_SCALE[1]
+
+        #right-justify
+        offset = 0
+        if len(digits) <= 4:
+            offset = (5 - len(digits)) * w
+
         for i in range(len(digits)):
-            img= game_context.game_master.sprite_master.get_image_name(str(digits[i]))
-            self.surface.blit(img, ((i*globals.ENEMY_SCALE[0], 0), globals.ENEMY_SCALE))
+            img = game_context.game_master.sprite_master.get_image_name(str(digits[i]))
+            self.surface.blit(img, ((i*w + offset, 0), (w, h)))
         return self.surface

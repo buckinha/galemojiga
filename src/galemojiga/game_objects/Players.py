@@ -56,13 +56,13 @@ class Player(GameObject):
         self.bullet_image = 'p{}_bullet'.format(self.number)
         self.firing = False
         self.firing_special = False
-        self.fire_delay = globals.FIRE_DELAY
         self.size=[19,45]
         self.hit_offset= [18, 5]
 
         self.powerup = None
         self.base_bullet_str = 1
         self.double_gun = False
+        self.coffee_gun = False
         self.special_gun = None
 
         if self.difficulty == 1:
@@ -81,11 +81,11 @@ class Player(GameObject):
         if self.movement_key_list is None:
             return
 
-        # key ups (cancel motion in that direction
-        if self.movement_key_list.up in input_dict['key_up']:
-            self.speed_up = 0
-        elif self.movement_key_list.down in input_dict['key_up']:
-            self.speed_down = 0
+        # key ups (cancel motion in that direction)
+        # if self.movement_key_list.up in input_dict['key_up']:
+        #     self.speed_up = 0
+        # elif self.movement_key_list.down in input_dict['key_up']:
+        #     self.speed_down = 0
 
         if self.movement_key_list.left in input_dict['key_up']:
             self.speed_left = 0
@@ -93,10 +93,10 @@ class Player(GameObject):
             self.speed_right = 0
 
         # key downs (start motion in that direction, and ignore key ups)
-        if self.movement_key_list.up in input_dict['key_down']:
-            self.speed_up = self.speed_vertical_magnitude
-        elif self.movement_key_list.down in input_dict['key_down']:
-            self.speed_down = self.speed_vertical_magnitude
+        # if self.movement_key_list.up in input_dict['key_down']:
+        #     self.speed_up = self.speed_vertical_magnitude
+        # elif self.movement_key_list.down in input_dict['key_down']:
+        #     self.speed_down = self.speed_vertical_magnitude
 
         if self.movement_key_list.left in input_dict['key_down']:
             self.speed_left = self.speed_horizontal_magnitude
@@ -143,7 +143,10 @@ class Player(GameObject):
     def fire_main_gun(self):
         now = time.time()
         time_since_last_shot = now - self.last_shot_time
-        if time_since_last_shot >= self.fire_delay:
+        delay = globals.FIRE_DELAY
+        if self.coffee_gun:
+            delay = globals.FAST_FIRE_DELAY
+        if time_since_last_shot >= delay:
             if self.firing is True:
                 self.last_shot_time = now
                 if self.double_gun:

@@ -1,11 +1,8 @@
 BUGS
-* menu not centered
-* coffeegun: less bullets, but faster bullets (possibly cheat by using two-bullet animations)
 * fix level 1 and 2 spawning overlap
-* santalevel needs snowmen and clouds
-* scoreboard needs to be right justified
-* powerups only drop hearts if they are needed
+* santalevel needs snowmen, penguins, and clouds
 * can't fire special and main gun simultaneously. Probably and elif statement
+
 
 
 FEATURES
