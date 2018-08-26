@@ -19,6 +19,7 @@ def full_row_of(enemy_type):
     return enemies
 
 
+
 class WaveWinkersLeft:
 
     def spawn(self, game_context):
@@ -172,23 +173,35 @@ class WaveTwoSantas:
 
 
 class WaveBlockadeOf:
-    def __init__(self, enemy_type):
+    def __init__(self, enemy_type, rows=5, row_delay=3):
         self.enemy_type = enemy_type
+        self.row_count = rows
+        self.row_delay = row_delay
+        self.speed_h = 10
+        self.speed_v = 2
 
     def spawn(self, game_context):
-        rows = 5
+        rows = self.row_count
         row_buffer = globals.CEILING_BUFFER + globals.UNIT * 2
         for r in range(rows):
-            for c in range(1, globals.H_UNITS -1):
-                e = self.enemy_type()
+            for c in range(1, globals.H_UNITS - 1):
+                move_delay = self.row_delay * (rows - r)
+                e = self.enemy_type(c, move_delay)
                 e.x = (c * globals.UNIT) - 500
                 e.y = (r * globals.UNIT) + row_buffer
-                e.speed_h = 10
-                e.speed_v = 2
-                e.march_to_column = c
-                e.move_delay = 3 * (rows - r)
-                e.reassign_move_list()
+                e.speed_h = self.speed_h
+                e.speed_v = self.speed_v
                 game_context.enemies.append(e)
+
+class WaveWinkerBlock(WaveBlockadeOf):
+    def __init__(self, rows=5, row_delay=3):
+        super().__init__(enemy_type=EnemyWinkerMarcher,
+                         rows=rows, row_delay=row_delay)
+
+class WaveCrierBlock(WaveBlockadeOf):
+    def __init__(self, rows=5, row_delay=3):
+        super().__init__(enemy_type=EnemyCrierMarcher,
+                         rows=rows, row_delay=row_delay)
 
 
 class WaveSnowmanBlockade(WaveBlockadeOf):
@@ -255,16 +268,17 @@ class TimedLevel(LevelAbstract):
             print('Spawning Complete')
             self.spawning_complete = True
 
+
 class Level1(LevelAbstract):
 
     def __init__(self):
         super().__init__()
         self.wave_time_gap = 6
-        self.waves = [WaveWinkersLeft(),
+        self.waves = [WaveWinkerBlock(rows=4),
                       WaveWinkersLeft(),
                       WaveWinkersLeft(),
                       WaveWinkersAndCryersLeft(),
-                      WaveWinkersLeft(),
+                      WaveWinkerBlock(rows=4),
                       WaveWinkersAndCryersLeft()]
         self.waves_spawned = [False] * len(self.waves)
 
@@ -276,9 +290,10 @@ class Level2(LevelAbstract):
         self.wave_time_gap = 6
         self.waves = [WaveWinkersLeft(),
                       WaveWinkersAndCryersLeft(),
-                      WaveCryersLeft(),
+                      WaveCrierBlock(rows=1),
                       WaveWinkersAndCryersLeft(),
                       Wave2Devils(),
+                      WaveCrierBlock(rows=1),
                       WaveWinkersAndCryersLeft(),
                       WaveWinkersAndDevilsLeft(),
                       WaveCryersLeft()]
@@ -324,7 +339,7 @@ class Level4(TimedLevel):
                       [WaveRandomPoop(), 1]]
 
 
-class Level5(TimedLevel):
+class LevelZombie(TimedLevel):
     def __init__(self):
         super().__init__()
         self.waves = [[WaveZombieWall(), 2],
@@ -344,4 +359,4 @@ class LevelSanta(TimedLevel):
 
 
 
-LEVEL_LIST = [LevelSanta, Level1, Level2, Level3, Level4, Level5, LevelSanta]
+LEVEL_LIST = [Level2, Level1, Level2, Level3, Level4, LevelSanta, LevelZombie]

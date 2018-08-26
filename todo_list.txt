@@ -1,6 +1,5 @@
 BUGS
 * fix level 1 and 2 spawning overlap
-* santalevel needs snowmen, penguins, and clouds
 * can't fire special and main gun simultaneously. Probably and elif statement
 
 

@@ -405,14 +405,12 @@ class EnemySanta(GenericSliderLeft, MonkeyBase):
             present = SantaBullet(game_context, pos, spd, 'enemy')
             game_context.bullets.append(present)
 
-class GenericMarcher(Enemy):
-    def __init__(self):
-        super().__init__()
-        self.march_to_column = 0
-        self.move_delay = 1
-        self.move_list = self.reassign_move_list()
 
-    def reassign_move_list(self):
+class GenericMarcher(Enemy):
+    def __init__(self, column_assignment, move_delay):
+        super().__init__()
+        self.march_to_column = column_assignment
+        self.move_delay = move_delay
         self.move_list = [
             [self._move_right_to_unit, self.march_to_column],
             [self._wait, self.move_delay],
@@ -420,8 +418,8 @@ class GenericMarcher(Enemy):
         ]
 
 class EnemySnowman(GenericMarcher):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, column_assignment, move_delay):
+        super().__init__(column_assignment, move_delay)
         self.frame_list = [random.choice(['snowman_1', 'snowman_2'])]
 
 class GenericStraferRight(Enemy):
@@ -454,3 +452,28 @@ class EnemyPenguin(GenericStraferRight):
         self.bullet_type = BulletFish
         self.shoot_chance = 15
         self.shoot_chance_out_of = 1000
+
+
+class EnemyWinkerMarcher(GenericMarcher):
+    def __init__(self, column_assignment, move_delay):
+        super().__init__(column_assignment, move_delay)
+        self.frame_list = ['smile', 'wink']
+        self.health = 2
+
+class EnemyCrierMarcher(GenericMarcher):
+
+    def __init__(self, column_assignment, move_delay):
+        super().__init__(column_assignment, move_delay)
+        self.frame_list = ['cryer_1', 'cryer_2']
+        self.health = 3
+        self.tear_chance = 5
+        self.tear_chance_max = 1000
+        self.last_tear_time = 0
+
+    def update(self, game_context):
+        super().update(game_context)
+        if random.randint(0, self.tear_chance_max) <= self.tear_chance:
+            tear = BulletTear(game_context=game_context,
+                              position=[self.x, self.y])
+
+            game_context.bullets.append(tear)

@@ -69,7 +69,13 @@ class PlayerStats(GameObject):
         self.draw_border()
 
     def draw_border(self):
-        pygame.draw.rect(self.surface, colors.BLUE, ((0,0), self.size), 3)
+        if self.player.number == 1:
+            color = colors.BLUE
+        elif self.player.number == 2:
+            color = colors.LIGHTGREY
+        else:
+            color = colors.DARKGREY
+        pygame.draw.rect(self.surface, color, ((0,0), self.size), 3)
 
     def update_score_image(self, game_context):
         x_offset = 10
