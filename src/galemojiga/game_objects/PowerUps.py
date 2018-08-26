@@ -160,13 +160,21 @@ class CandyGun(SpecialGun):
         candy.size = globals.ENEMY_SCALE
         self.player.game_context.bullets.append(candy)
 
-def pick_powerup():
+def pick_powerup(game_context):
     r = random.randint(0,10)
-    if r <= 5:
-        return PowerUpHealth1()
-        #return CandyGun()
+
+    health_powerups = [PowerUpHealth1, PowerUpHealth1, PowerUpHealth1, PowerUpHealthMax]
+    gun_powerups = [CandyGun, ChiliGun, SushiGun, PowerUpCoffee, PowerUpDoubleGun]
+
+    missing_health_total = 0
+    for p in game_context.players:
+        missing_health_total += (p.max_health - p.health)
+
+    if (missing_health_total / len(game_context.players)) >= 1:
+        pup_list = gun_powerups + health_powerups
+    else:
+        pup_list = gun_powerups
 
     # pick a special powerup
-    choices = [CandyGun, ChiliGun, SushiGun, PowerUpCoffee, PowerUpHealthMax, PowerUpDoubleGun]
-    pup = random.choice(choices)
+    pup = random.choice(pup_list)
     return pup()

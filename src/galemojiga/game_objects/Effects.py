@@ -36,7 +36,7 @@ class PartyParrotLeft(GameObject):
             if self.position[0] < self.launch_point + buffer:
                 if self.position[0] > self.launch_point - buffer:
                     self.powerup_launched = True
-                    pup = pick_powerup()
+                    pup = pick_powerup(game_context)
                     pup.x = self.x
                     pup.y = self.y+10
                     game_context.powerups.append(pup)
