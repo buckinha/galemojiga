@@ -60,6 +60,8 @@ class MainGameContext(GameContext):
         self.fps_check_delay = 1.0
         self.frame_rate_instantaneous = 0
 
+        self.paused = False
+
     def trigger_game_over(self):
         self.quit_to_menu()
 
@@ -70,12 +72,17 @@ class MainGameContext(GameContext):
             self.frame_count_since_last_check = 0
             self.time_of_last_fps_check = time.time()
 
+        # pause or quit?
+        self.check_pause(input_dict)
+        if self.paused:
+            self.check_quit(input_dict)
+            self.show_pause_text()
+            screen.blit(self.surface, self.surface.get_rect())
+            return
+
         # TODO for now, i'm wiping the entire surface on each blit
         # TODO a better way would be to blit only sections that are changing
         self.surface.fill(colors.BLACK)
-
-        # quit?
-        self.check_quit(input_dict)
 
         # debug switches
         self.process_debug_switches(input_dict)
@@ -111,8 +118,13 @@ class MainGameContext(GameContext):
         screen.blit(self.surface, self.surface.get_rect())
 
     def check_quit(self, input_dict):
+        if self.paused:
+            if K_q in input_dict['key_up']:
+                self.quit_to_menu()
+
+    def check_pause(self, input_dict):
         if K_ESCAPE in input_dict['key_up']:
-            self.quit_to_menu()
+            self.paused = not self.paused
 
     def quit_to_menu(self):
         self.game_master.reset_context('main_game')
@@ -281,5 +293,18 @@ class MainGameContext(GameContext):
         for p in self.players:
             if p.invulnerable:
                 p.check_invulnerability()
+
+    def show_pause_text(self):
+        text1 = 'GAME PAUSED'
+        text2 = 'press [esc] to unpause'
+        text3 = 'press [q] to quit'
+
+        lines = [text1, text2, text3]
+
+        for t, i in zip(lines, range(len(lines))):
+            textsurface = self.game_master.menu_font.render(t,
+                                                 True,
+                                                 (220, 220, 220))
+            self.surface.blit(textsurface, (150, 200 + i * 25))
 
 

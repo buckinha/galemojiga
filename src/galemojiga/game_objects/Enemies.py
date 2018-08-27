@@ -395,7 +395,7 @@ class VampireBase(Enemy):
 
     def spawn_drop(self, game_context):
         pos = [self.x, self.y + 25]
-        bat = random.choice([EnemyBatLeft, EnemyBatRight])()
+        bat = random.choice([EnemyBatLeft, EnemyBatRight])(game_context)
         bat.position = pos
         game_context.enemies.append(bat)
 

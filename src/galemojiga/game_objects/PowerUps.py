@@ -106,7 +106,7 @@ class SushiGun(SpecialGun):
 
     def _fire(self):
         pos = self.player.position
-        pos[0] -= 15
+        pos[0] += 20
         sushi_sprites = ['sushi_rice', 'tempura', 'nigiri', 'nigiri', 'dumpling']
         for i in range(5):
             piece = Bullet(game_context=self.player.game_context,
@@ -131,6 +131,7 @@ class ChiliGun(SpecialGun):
 
     def _fire(self):
         pos = self.player.position
+        pos[0] += 20
 
         flame = Bullet(game_context=self.player.game_context,
                        position=pos,
@@ -140,6 +141,7 @@ class ChiliGun(SpecialGun):
                        image='flame')
         flame.size = globals.ENEMY_SCALE
         self.player.game_context.bullets.append(flame)
+
 
 class CandyGun(SpecialGun):
     def setup(self):
@@ -151,7 +153,7 @@ class CandyGun(SpecialGun):
 
     def _fire(self):
         pos = self.player.position
-
+        pos[0] += 20
         candy = CandyBullet(game_context=self.player.game_context,
                             position=pos,
                             speed = [0, -15],
