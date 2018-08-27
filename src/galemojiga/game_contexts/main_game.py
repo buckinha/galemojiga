@@ -49,7 +49,7 @@ class MainGameContext(GameContext):
 
         self.levels = [l() for l in LEVEL_LIST]
         self.level_index = 0
-        self.new_level_delay = 5
+        self.new_level_delay = 3.5
         self.level_finish_time = 0
 
         self.debug_on = False
@@ -141,6 +141,12 @@ class MainGameContext(GameContext):
         if K_F8 in input_dict['key_up']:
             self.debug_on = not self.debug_on
 
+        p_count = len(self.players)
+        for i, key in zip(range(p_count), [K_F1, K_F2, K_F3][:p_count]):
+            if key in input_dict['key_up']:
+                self.players[i].invulnerable = not self.players[i].invulnerable
+                self.players[i].debug_invulnerablity = not self.players[i].debug_invulnerablity
+
         if not self.debug_on:
             return
 
@@ -193,7 +199,9 @@ class MainGameContext(GameContext):
                 self.level_index += 1
             else:
                 time_left = str(int(5 - (time.time() - self.level_finish_time)))
-                print("New Level in: {}".format(time_left))
+                img_name = '{}_orange'.format(int(time_left))
+                countdown_img = self.game_master.sprite_master.get_image_name(img_name)
+                self.surface.blit(countdown_img, [230,275])
 
         level.update(self)
 
@@ -308,6 +316,9 @@ class MainGameContext(GameContext):
 
         lines = [text1, text2, text3]
 
+        r = [120, 190, 290, 100]
+        pygame.draw.rect(self.surface, colors.BLACK, r)
+
         for t, i in zip(lines, range(len(lines))):
             textsurface = self.game_master.menu_font.render(t,
                                                  True,
@@ -326,7 +337,8 @@ class MainGameContext(GameContext):
         lines.append('')
         lines.append('Press [q] to quit')
 
-        r = [150, 200, 100, 100]
+
+        r = [120, 190, 270, 250]
         pygame.draw.rect(self.surface, colors.BLACK, r)
 
         scoreboard = Scoreboard()

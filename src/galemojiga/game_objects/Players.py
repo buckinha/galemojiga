@@ -47,7 +47,7 @@ class Player(GameObject):
         self.speed_left = 0
         self.speed_up = 0
         self.speed_down = 0
-        self.speed_horizontal_magnitude = 4
+        self.speed_horizontal_magnitude = 5
         self.speed_vertical_magnitude = 0
         self.last_shot_time = 0
         self.health = 4
@@ -70,6 +70,7 @@ class Player(GameObject):
 
         self.invulnerable = False
         self.invulnerable_expires_at = 0
+        self.debug_invulnerablity= False
 
         self.set_power_factor_for_difficulty(self.difficulty)
 
@@ -176,11 +177,11 @@ class Player(GameObject):
 
     def _new_bullet(self):
         return Bullet(game_context=self.game_context,
-                       position=[self.x + 22, self.y],
-                       speed=globals.PLAYER_GUN_1_SPEED,
-                       launched_by=self.number,
-                       strength=self.base_bullet_str * self.power_factor,
-                       image=self.bullet_image)
+                      position=[self.x + 22, self.y],
+                      speed=globals.PLAYER_BULLET_SPEED,
+                      launched_by=self.number,
+                      strength=self.base_bullet_str * self.power_factor,
+                      image=self.bullet_image)
 
     def update(self, input_dict):
         super().update(self.game_context)
@@ -215,4 +216,5 @@ class Player(GameObject):
     def check_invulnerability(self):
         if self.invulnerable:
             if time.time() > self.invulnerable_expires_at:
-                self.expire_invulnerability()
+                if not self.debug_invulnerablity:
+                    self.expire_invulnerability()

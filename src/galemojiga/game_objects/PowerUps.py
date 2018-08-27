@@ -101,6 +101,7 @@ class SushiGun(SpecialGun):
     def setup(self):
         super().setup()
         self.shots = 6
+        self.fire_delay = 0.75
         self.frame_list = ['sushi_bento']
         self.powerup_sprite = 'sushi_bento'
 
@@ -116,6 +117,7 @@ class SushiGun(SpecialGun):
                            strength=10,
                            image=random.choice(sushi_sprites))
             piece.size = globals.ENEMY_SCALE
+            piece.immune_ticks = 1
             self.player.game_context.bullets.append(piece)
 
 

@@ -154,7 +154,7 @@ class SantaBullet(BulletShatter):
         self.shard_speed_h = 4
         self.shard_speed_v = 4
         self.auto_shatter = True
-        self.auto_shatter_at = globals.FLOOR - 50
+        self.auto_shatter_at = globals.FLOOR - 20
         self.shard_expire_ticks = 25
         self.shard_immune_ticks = 0
 
@@ -183,7 +183,7 @@ class BoomEnemyScale(BoomBase):
                          strength=strength, image=image)
 
 class BoomBig(BoomBase):
-    def __init__(self, game_context, position, speed=(0,5),
+    def __init__(self, game_context, position, speed=(0,0),
                  launched_by='enemy',
                  strength=1, image='boom_big'):
         super().__init__(game_context=game_context,
@@ -192,3 +192,15 @@ class BoomBig(BoomBase):
                          strength=strength, image=image)
 
         self.size = globals.NORMAL_SCALE
+
+class BoomLittle(BoomBase):
+    def __init__(self, game_context, position, speed=(0,0),
+                 launched_by='enemy',
+                 strength=1, image='boom_small'):
+        super().__init__(game_context=game_context,
+                         position=position, speed=speed,
+                         launched_by=launched_by,
+                         strength=strength, image=image)
+
+        self.size = globals.BULLET_SCALE
+        self.strength=1

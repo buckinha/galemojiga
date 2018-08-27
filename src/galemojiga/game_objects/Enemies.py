@@ -1,10 +1,7 @@
-import time
-import copy
-import random
-from galemojiga.game_objects.GameObject import GameObject
 from galemojiga.game_objects.Bullets import *
 import galemojiga.globals as globals
 from galemojiga.game_objects.Players import Player
+from galemojiga.game_objects.Effects import SunBoom
 
 ENEMY_OFFSET = 41
 
@@ -40,7 +37,9 @@ class Enemy(GameObject):
             self.dead = True
 
     def on_death(self):
-        pass
+        sun = SunBoom()
+        sun.position = self.position
+        self.game_context.effects.append(sun)
 
 class GenericLeftShimmier(Enemy):
 
@@ -141,25 +140,42 @@ class EnemyBomb(GenericFaller):
         self.frame_list = ['bomb']
         self.strength = 3
         self.health = 6
-        self.exploded = False
 
     def update(self, game_context):
         super().update(game_context)
+        if abs(self.y - globals.FLOOR) < 20:
+            self.dead = True
+            self.on_death()
 
     def on_death(self):
-        if self.exploded is False:
-            self.exploded = True
-            pos = self.position
-            pos[0] -= 10
-            pos[1] -= 10
-            boom = BoomBig(self.game_context, pos, speed=(0, 0))
-            self.game_context.bullets.append(boom)
+        pos = self.position
+        pos[0] -= 10
+        pos[1] -= 10
+        boom = BoomBig(self.game_context, pos, speed=(0, 0))
+        self.game_context.bullets.append(boom)
+        #make scatter little_booms
+        for i in range(6):
+            spd = random.choice([[-5,0],
+                                 [ 5,0],
+                                 [0,-5],
+                                 [0, 5],
+                                 [4, 4],
+                                 [-4,-4],
+                                 [4,-4],
+                                 [-4,4]])
+            lil_boom = BoomLittle(game_context=self.game_context,
+                                  position=pos,
+                                  speed = spd)
+            lil_boom.expire_ticks=5
+            lil_boom.immune_ticks=0
+            self.game_context.bullets.append(lil_boom)
 
 
 class GenericDropper(Enemy):
     def __init__(self, game_context):
         super().__init__(game_context)
-        self.spawn_probability = [10, 1000]
+        chance = 5 + (5 * game_context.game_master.difficulty)
+        self.spawn_probability = [chance, 1000]
 
     def update(self, game_context):
         if random.randint(0, self.spawn_probability[1]) <= self.spawn_probability[0]:
@@ -204,6 +220,7 @@ class EnemyHelicopterRight(GenericDropperRight):
         bomb.x = self.x
         bomb.y = self.y + 20
         game_context.enemies.append(bomb)
+
 
 class EnemyTrain(Enemy):
     def __init__(self, game_context):
@@ -256,7 +273,7 @@ class GenericCryer(Enemy):
         super().__init__(game_context)
         self.frame_list = ['cryer_1', 'cryer_2']
         self.health = 2
-        self.tear_chance = 5
+        self.tear_chance = 5 * game_context.game_master.difficulty
         self.tear_chance_max = 1000
         self.last_tear_time = 0
 
@@ -325,7 +342,8 @@ class MonkeyBase(Enemy):
     def __init__(self, game_context):
         super().__init__(game_context)
         self.health = 10
-        self.spawn_probability = [10,1000]
+        chance = 5 + (5 * game_context.game_master.difficulty)
+        self.spawn_probability = [chance,1000]
         self.frame_list = ['monkey_1', 'monkey_2', 'monkey_3']
 
     def update(self, game_context):
@@ -385,7 +403,8 @@ class VampireBase(Enemy):
     def __init__(self, game_context):
         super().__init__(game_context)
         self.health = 10
-        self.spawn_probability = [20,1000]
+        chance = 10 + (5 * game_context.game_master.difficulty)
+        self.spawn_probability = [chance, 1000]
         self.frame_list = random.choice([['vampire_1'], ['vampire_2']])
 
     def update(self, game_context):
@@ -421,7 +440,8 @@ class EnemySanta(GenericSliderLeft, MonkeyBase):
         super().__init__(game_context)
         self.frame_list = ['santa']
         self.health = 5
-        self.spawn_probability = [5, 1000]
+        chance = 5 * game_context.game_master.difficulty
+        self.spawn_probability = [chance, 1000]
 
     def spawn_drop(self, game_context):
         pos = [self.x, self.y + 25]
@@ -450,7 +470,7 @@ class EnemySnowman(GenericMarcher):
 class GenericStraferRight(Enemy):
     def __init__(self, game_context):
         super().__init__(game_context)
-        self.shoot_chance = 5
+        self.shoot_chance = 5 * game_context.game_master.difficulty
         self.shoot_chance_out_of = 1000
         self.last_shot_time = 0
         self.move_list = [self._move_right_forever]
@@ -475,7 +495,7 @@ class EnemyPenguin(GenericStraferRight):
         self.frame_list = ['penguin']
         self.health = 3
         self.bullet_type = BulletFish
-        self.shoot_chance = 15
+        self.shoot_chance = 10 + (5 * game_context.game_master.difficulty)
         self.shoot_chance_out_of = 1000
 
 
@@ -492,7 +512,7 @@ class EnemyCrierMarcher(GenericMarcher):
         super().__init__(game_context, column_assignment, move_delay)
         self.frame_list = ['cryer_1', 'cryer_2']
         self.health = 2
-        self.tear_chance = 5
+        self.tear_chance = 5 * game_context.game_master.difficulty
         self.tear_chance_max = 1000
         self.last_tear_time = 0
         self.speed_h = 2

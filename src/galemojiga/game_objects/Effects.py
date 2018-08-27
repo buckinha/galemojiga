@@ -5,6 +5,23 @@ import galemojiga.globals as globals
 import galemojiga.colors as colors
 from galemojiga.game_objects.PowerUps import *
 
+class SunBoom(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.frame_list = ['sun_1', 'sun_2', 'sun_3']
+        self.ticks_till_death = 5
+        self.speed_h = 0
+        self.speed_v = 0
+        self.size = globals.ENEMY_SCALE
+        self.frame_rate = 0.1
+
+    def update(self, game_context):
+        super().update(game_context)
+        self.ticks_till_death -= 1
+        self.x += 1
+        self.y += 1
+        if self.ticks_till_death <= 0:
+            self.dead = True
 
 
 class PartyParrotLeft(GameObject):

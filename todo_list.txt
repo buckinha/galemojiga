@@ -4,8 +4,6 @@ BUGS
 FEATURES
 * game layout
 
-* countdown between levels
-
 * Hit Animations
 
 * New Enemies

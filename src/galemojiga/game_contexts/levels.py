@@ -300,10 +300,10 @@ class Level2(LevelAbstract):
         self.wave_time_gap = 6
         self.waves = [WaveWinkersLeft(),
                       WaveWinkersAndCryersLeft(),
-                      WaveCrierBlock(rows=1),
+                      WaveCrierBlock(rows=2),
                       WaveWinkersAndCryersLeft(),
                       Wave2Devils(),
-                      WaveCrierBlock(rows=1),
+                      WaveCrierBlock(rows=2),
                       WaveWinkersAndCryersLeft(),
                       WaveWinkersAndDevilsLeft(),
                       WaveCryersLeft()]
