@@ -177,8 +177,9 @@ def pick_powerup(game_context):
         if p.double_gun:
             doublegun_total += 1
 
-    if (missing_health_total / len(game_context.players)) >= 1:
-        pup_list = gun_powerups + health_powerups
+    if (missing_health_total / len(game_context.players)) >= 1 and \
+        game_context.game_master.difficulty < 3:
+            pup_list = gun_powerups + health_powerups
     else:
         pup_list = gun_powerups
 

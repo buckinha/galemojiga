@@ -186,7 +186,7 @@ class WaveBlockadeOf:
         for r in range(rows):
             for c in range(1, globals.H_UNITS - 1):
                 move_delay = self.row_delay * (rows - r)
-                e = self.enemy_type(c, move_delay)
+                e = self.enemy_type(game_context, c, move_delay)
                 e.x = (c * globals.UNIT) - 500
                 e.y = (r * globals.UNIT) + row_buffer
                 e.speed_h = self.speed_h
@@ -369,4 +369,4 @@ class LevelSanta(TimedLevel):
 
 
 
-LEVEL_LIST = [Level3, Level1, Level2, Level3, Level4, LevelSanta, LevelZombie]
+LEVEL_LIST = [Level1, Level2, Level3, Level4, LevelSanta, LevelZombie]
