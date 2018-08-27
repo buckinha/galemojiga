@@ -70,7 +70,7 @@ class GameMaster:
 
             self.current_context.update(self.screen, event_dict)
 
-            if self.current_context.game_over:
+            if self.current_context.quit_program:
                 break
 
             pygame.display.flip()

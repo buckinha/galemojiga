@@ -46,7 +46,7 @@ class MainMenuContext(GameContext):
                 self.game_master.reset_context('main_game')
                 self.game_master.set_context('main_game')
             if self.selector_position == 'quit':
-                self.game_over = True
+                self.quit_program = True
             elif self.selector_position == 'players_1':
                 self.game_master.player_count = 1
             elif self.selector_position == 'players_2':

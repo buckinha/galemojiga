@@ -4,15 +4,7 @@ BUGS
 FEATURES
 * game layout
 
-* Game Over
-  * Show high score
-  * Show Player score(s)
-  * Exit to Main Menu on interaction
-
 * countdown between levels
-
-* Player Status
-  * Lives left (for the team)
 
 * Hit Animations
 

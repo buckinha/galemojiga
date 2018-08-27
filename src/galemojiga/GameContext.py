@@ -8,6 +8,7 @@ class GameContext:
         self.surface = pygame.Surface(self.size)
         self.game_over = False
         self.game_master = game_master
+        self.quit_program = False
 
     def update(self, screen, input_dict):
         self.surface.fill(colors.BLACK)

@@ -5,7 +5,7 @@ from pygame.locals import *
 from galemojiga.GameContext import GameContext
 from galemojiga.game_objects.Players import Player, MovementKeys
 from galemojiga.game_contexts.levels import LEVEL_LIST
-from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight, PlayerStats, PlayerLivesDisplay
+from galemojiga.game_objects.Effects import PartyParrotLeft, PartyParrotRight, PlayerStats, PlayerLivesDisplay, Scoreboard
 import galemojiga.colors as colors
 import galemojiga.globals as globals
 
@@ -72,6 +72,13 @@ class MainGameContext(GameContext):
             self.frame_count_since_last_check = 0
             self.time_of_last_fps_check = time.time()
 
+        # game over?
+        if self.game_over:
+            self.check_quit(input_dict)
+            self.show_game_over()
+            screen.blit(self.surface, self.surface.get_rect())
+            return
+
         # pause or quit?
         self.check_pause(input_dict)
         if self.paused:
@@ -118,7 +125,7 @@ class MainGameContext(GameContext):
         screen.blit(self.surface, self.surface.get_rect())
 
     def check_quit(self, input_dict):
-        if self.paused:
+        if self.paused or self.game_over:
             if K_q in input_dict['key_up']:
                 self.quit_to_menu()
 
@@ -287,7 +294,7 @@ class MainGameContext(GameContext):
     def lose_one_life(self):
         self.extra_lives -= 1
         if self.extra_lives < 0:
-            self.quit_to_menu()
+            self.game_over = True
 
     def check_player_invulnerability(self):
         for p in self.players:
@@ -307,4 +314,29 @@ class MainGameContext(GameContext):
                                                  (220, 220, 220))
             self.surface.blit(textsurface, (150, 200 + i * 25))
 
+    def show_game_over(self):
+        total_score = 0
+        for p in self.player_scores:
+            total_score += self.player_scores[p]
+        lines = []
+        lines.append('   GAME OVER')
+        lines.append('')
+        lines.append(' TOTAL  SCORE')
+        lines.append('')
+        lines.append('')
+        lines.append('Press [q] to quit')
+
+        r = [150, 200, 100, 100]
+        pygame.draw.rect(self.surface, colors.BLACK, r)
+
+        scoreboard = Scoreboard()
+        score_img = scoreboard.get_scoreboard(total_score, self)
+
+        for t, i in zip(lines, range(len(lines))):
+            textsurface = self.game_master.menu_font.render(t,
+                                                 True,
+                                                 (220, 220, 220))
+            self.surface.blit(textsurface, (150, 200 + i * 25))
+
+        self.surface.blit(score_img, (150,275))
 
