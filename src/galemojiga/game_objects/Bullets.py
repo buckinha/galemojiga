@@ -61,7 +61,8 @@ class BulletTear(Bullet):
                          strength=strength, image=image)
 
         self.size = [14, 17]
-        self.hit_offset = [4, 2]
+        self.hit_offset = [0, 0]
+        self.hit_scale = [-4, -2]
 
 
 class BulletFish(Bullet):
@@ -156,3 +157,38 @@ class SantaBullet(BulletShatter):
         self.auto_shatter_at = globals.FLOOR - 50
         self.shard_expire_ticks = 25
         self.shard_immune_ticks = 0
+
+
+class BoomBase(Bullet):
+    def __init__(self, game_context, position, speed=(0,5),
+                 launched_by='enemy',
+                 strength=1, image='boom_enemy'):
+        super().__init__(game_context=game_context,
+                         position=position, speed=speed,
+                         launched_by=launched_by,
+                         strength=strength, image=image)
+
+        self.size = globals.ENEMY_SCALE
+        self.expire_ticks = 10
+        self.immune_ticks = 2
+
+
+class BoomEnemyScale(BoomBase):
+    def __init__(self, game_context, position, speed=(0,5),
+                 launched_by='enemy',
+                 strength=1, image='boom_enemy'):
+        super().__init__(game_context=game_context,
+                         position=position, speed=speed,
+                         launched_by=launched_by,
+                         strength=strength, image=image)
+
+class BoomBig(BoomBase):
+    def __init__(self, game_context, position, speed=(0,5),
+                 launched_by='enemy',
+                 strength=1, image='boom_big'):
+        super().__init__(game_context=game_context,
+                         position=position, speed=speed,
+                         launched_by=launched_by,
+                         strength=strength, image=image)
+
+        self.size = globals.NORMAL_SCALE

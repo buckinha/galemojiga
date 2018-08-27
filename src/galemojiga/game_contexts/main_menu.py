@@ -227,6 +227,9 @@ class MainMenuContext(GameContext):
         self.surface.blit(img, pos)
 
     def draw_difficulty_selector_arrow(self, difficulty):
+        if difficulty > 3:
+            difficulty = 3
+
         img = self.game_master.sprite_master.get_image('symbols', (2, 14))
         h_offset = 120
 

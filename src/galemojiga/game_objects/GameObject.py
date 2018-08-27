@@ -99,9 +99,9 @@ class GameObject:
 
     def _move_right_to_unit(self, to_unit):
         self.x += self.speed_h
-        if self.x + self.size[0] > globals.RIGHT_WALL:
+        if self.x + self.size[0] >= globals.RIGHT_WALL:
             self.x = globals.RIGHT_WALL - self.size[0]
-        if self.x > globals.get_h_unit_x_val(to_unit):
+        if self.x >= globals.get_h_unit_x_val(to_unit):
             self._next_move()
 
     def _move_down_to_unit(self, to_unit):

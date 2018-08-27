@@ -55,10 +55,20 @@ class MainGameContext(GameContext):
         self.debug_on = False
         self.debug_font = debug_font
 
+        self.frame_count_since_last_check = 0
+        self.time_of_last_fps_check = 0
+        self.fps_check_delay = 1.0
+        self.frame_rate_instantaneous = 0
+
     def trigger_game_over(self):
         self.quit_to_menu()
 
     def update(self, screen, input_dict):
+        self.frame_count_since_last_check += 1
+        if time.time() - self.time_of_last_fps_check > self.fps_check_delay:
+            self.frame_rate_instantaneous = self.frame_count_since_last_check / self.fps_check_delay
+            self.frame_count_since_last_check = 0
+            self.time_of_last_fps_check = time.time()
 
         # TODO for now, i'm wiping the entire surface on each blit
         # TODO a better way would be to blit only sections that are changing
@@ -119,16 +129,32 @@ class MainGameContext(GameContext):
             return
 
         # object counts
-        bullet_t = 'BulletCount: {}'.format(len(self.bullets))
-        textsurface = self.debug_font.render(bullet_t,
-                                             True,
-                                             (220, 220, 220))
-        self.surface.blit(textsurface, (0, 0))
+        t1 = 'BulletCount: {}'.format(len(self.bullets))
+        t2 = 'Enemies: {}'.format(len(self.enemies))
+        t3 = 'PowerUps: {}'.format(len(self.powerups))
+        t4 = 'Effects: {}'.format(len(self.effects))
+        t5 = 'InstFPS: {}'.format(str(self.frame_rate_instantaneous))
+
+        lines = [t1,t2,t3,t4,t5]
+        for t,i in zip(lines, range(len(lines))):
+            textsurface = self.debug_font.render(t,
+                                                 True,
+                                                 (220, 220, 220))
+            self.surface.blit(textsurface, (0, i*10))
+
 
     def _current_level_or_None(self):
         if self.level_index >= len(self.levels):
-            return None
+            self.reset_levels_and_increase_difficulty()
         return self.levels[self.level_index]
+
+    def reset_levels_and_increase_difficulty(self):
+        self.level_index = 0
+        self.game_master.difficulty += 1
+        for player in self.players:
+            player.set_power_factor_for_difficulty(self.game_master.difficulty)
+        for level in self.levels:
+            level.reset()
 
     def process_level_events(self):
 
@@ -142,7 +168,6 @@ class MainGameContext(GameContext):
             if len(self.enemies) == 0:
                 level.complete = True
                 self.level_finish_time = time.time()
-
 
         if level.complete:
             if time.time() - self.level_finish_time >= self.new_level_delay:
@@ -168,6 +193,7 @@ class MainGameContext(GameContext):
         for eff in self.effects:
             eff.update(game_context=self)
             self.surface.blit(self.game_master.sprite_master.get_image_name(eff.current_frame), eff.rect)
+        self.effects = [e for e in self.effects if not e.dead]
 
     def process_player_collisions(self):
         for player in self.players:

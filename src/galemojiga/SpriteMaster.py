@@ -86,7 +86,11 @@ class SpriteMaster:
             'socks': ['people', [4, 18]],
             'book': ['objects', [0, 7]],
             'racecar': ['travel', [4,1]],
-            'recycle': ['symbols', [2, 15], [40,40]]
+            'recycle': ['symbols', [2, 15], [40,40]],
+            'star': ['nature', [4, 3]],
+            'boom_small': ['nature', [5,10], globals.BULLET_SCALE],
+            'boom_enemy': ['nature', [5,10], globals.ENEMY_SCALE],
+            'boom_big': ['nature', [5,10], globals.NORMAL_SCALE]
         }
 
         # add cars:

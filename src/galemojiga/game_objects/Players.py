@@ -68,16 +68,19 @@ class Player(GameObject):
         self.coffee_gun = False
         self.special_gun = None
 
+        self.invulnerable = False
+        self.invulnerable_expires_at = 0
+
+        self.set_power_factor_for_difficulty(self.difficulty)
+
+    def set_power_factor_for_difficulty(self, difficulty):
         if self.difficulty == 1:
             self.power_factor = 2
         elif self.difficulty == 2:
             self.power_factor = 1
         else:
+            # difficulty is 3 or greater
             self.power_factor = 0.5
-
-        self.invulnerable = False
-        self.invulnerable_expires_at = 0
-
 
     @property
     def difficulty(self):

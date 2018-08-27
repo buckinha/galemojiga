@@ -10,10 +10,10 @@ class WaveEmpty:
         pass
 
 
-def full_row_of(enemy_type):
+def full_row_of(game_context, enemy_type):
     enemies = []
     for pos in FULL_ROW_POSITIONS:
-        en = enemy_type()
+        en = enemy_type(game_context)
         en.position = pos
         enemies.append(en)
     return enemies
@@ -23,7 +23,7 @@ def full_row_of(enemy_type):
 class WaveWinkersLeft:
 
     def spawn(self, game_context):
-        for enemy in full_row_of(EnemyWinkerLeft):
+        for enemy in full_row_of(game_context, EnemyWinkerLeft):
             game_context.enemies.append(enemy)
 
 
@@ -33,8 +33,8 @@ class Wave2Devils:
 
     def spawn(self, game_context):
 
-        devil1 = EnemyDevilLeft()
-        devil2 = EnemyDevilRight()
+        devil1 = EnemyDevilLeft(game_context)
+        devil2 = EnemyDevilRight(game_context)
         game_context.enemies.append(devil1)
         game_context.enemies.append(devil2)
 
@@ -46,9 +46,9 @@ class WaveWinkersAndCryersLeft:
     def spawn(self, game_context):
         for i in range(globals.H_UNITS):
             if i % 2 == 0:
-                enemy = EnemyCryerLeft()
+                enemy = EnemyCryerLeft(game_context)
             else:
-                enemy = EnemyWinkerLeft()
+                enemy = EnemyWinkerLeft(game_context)
 
             enemy.x += i * globals.UNIT
             game_context.enemies.append(enemy)
@@ -58,9 +58,9 @@ class WaveWinkersAndDevilsLeft:
     def spawn(self, game_context):
         for i in range(globals.H_UNITS):
             if i % 2 == 0:
-                enemy = EnemyCryerLeft()
+                enemy = EnemyCryerLeft(game_context)
             else:
-                enemy = EnemyDevilLeft()
+                enemy = EnemyDevilLeft(game_context)
 
             enemy.x += i * globals.UNIT
             game_context.enemies.append(enemy)
@@ -68,25 +68,25 @@ class WaveWinkersAndDevilsLeft:
 class WaveCryersLeft:
 
     def spawn(self, game_context):
-        for enemy in full_row_of(EnemyCryerLeft):
+        for enemy in full_row_of(game_context, EnemyCryerLeft):
             game_context.enemies.append(enemy)
 
 
 class WaveCarsLeft:
 
     def spawn(self, game_context):
-        for i in range(5):
-            car = GenericLeftSideSwerver()
+        for i in range(10):
+            car = GenericLeftSideSwerver(game_context)
             car.frame_list = ['car_{}'.format(random.randint(0,7))]
-            car.x += globals.UNIT * i
+            car.x = globals.LEFT_WALL - (i*27) - 50
             game_context.enemies.append(car)
 
 class WaveCarsRight:
     def spawn(self, game_context):
-        for i in range(5):
-            car = GenericRightSideSwerver()
+        for i in range(10):
+            car = GenericRightSideSwerver(game_context)
             car.frame_list = ['car_{}'.format(random.randint(0, 7))]
-            car.x -= globals.UNIT * i
+            car.x = globals.RIGHT_WALL + (i*27) + 50
             game_context.enemies.append(car)
 
 class WaveCarsBoth:
@@ -100,30 +100,30 @@ class WaveCarsBoth:
 class WaveHelicoptersTrio:
     def spawn(self, game_context):
         for i in range(3):
-            heli = EnemyHelicopterRight()
+            heli = EnemyHelicopterRight(game_context)
             heli.y = random.randint(0,100) + globals.CEILING
             game_context.enemies.append(heli)
 
 class WaveTrain:
     def spawn(self, game_context):
-        loco = EnemyTrainLocomotive()
+        loco = EnemyTrainLocomotive(game_context)
         loco.x = globals.RIGHT_WALL
         game_context.enemies.append(loco)
         for i in range(6):
-            car = EnemyTrainCar()
+            car = EnemyTrainCar(game_context)
             car.x = globals.RIGHT_WALL + ((i+1)*20)
             game_context.enemies.append(car)
 
 class WaveCrazy4:
     def spawn(self, game_context):
         for i in range(4):
-            crazy = EnemyCrazyBouncer()
+            crazy = EnemyCrazyBouncer(game_context)
             game_context.enemies.append(crazy)
 
 class WaveTwoMonkeys:
     def spawn(self, game_context):
-        m1 = EnemyMonkeyLeft()
-        m2 = EnemyMonkeyRight()
+        m1 = EnemyMonkeyLeft(game_context)
+        m2 = EnemyMonkeyRight(game_context)
         game_context.enemies.append(m1)
         game_context.enemies.append(m2)
 
@@ -132,18 +132,18 @@ class WaveZombieWall:
     def spawn(self, game_context):
         for i in range(len(FULL_ROW_POSITIONS)):
             if i%2 == 0:
-                zombie = Zombie1()
+                zombie = Zombie1(game_context)
             else:
-                zombie = Zombie2()
+                zombie = Zombie2(game_context)
             zombie.position = FULL_ROW_POSITIONS[i]
             zombie.y -= 20
             game_context.enemies.append(zombie)
 
 class WaveThreeVampires:
     def spawn(self, game_context):
-        vamp_l = VampireLeft()
-        vamp_r = VampireRight()
-        vamp_m = VampireRight()
+        vamp_l = VampireLeft(game_context)
+        vamp_r = VampireRight(game_context)
+        vamp_m = VampireRight(game_context)
         vamp_m.x = globals.H_MIDDLE
         game_context.enemies.append(vamp_l)
         game_context.enemies.append(vamp_r)
@@ -152,13 +152,13 @@ class WaveThreeVampires:
 class WaveFourGhosts:
     def spawn(self, game_context):
         for i in range(4):
-            ghost = EnemyGhost()
+            ghost = EnemyGhost(game_context)
             game_context.enemies.append(ghost)
 
 class WaveRandomPoop:
     def spawn(self, game_context):
         for i in range(2):
-            poop = GenericFaller()
+            poop = GenericFaller(game_context)
             poop.position = random.choice(FULL_ROW_POSITIONS)
             poop.frame_list = ['poop']
             game_context.enemies.append(poop)
@@ -167,7 +167,7 @@ class WaveRandomPoop:
 class WaveTwoSantas:
     def spawn(self, game_context):
         for i in range(2):
-            santa = EnemySanta()
+            santa = EnemySanta(game_context)
             santa.x = globals.H_MIDDLE + i*100
             game_context.enemies.append(santa)
 
@@ -197,11 +197,13 @@ class WaveWinkerBlock(WaveBlockadeOf):
     def __init__(self, rows=5, row_delay=3):
         super().__init__(enemy_type=EnemyWinkerMarcher,
                          rows=rows, row_delay=row_delay)
+        self.speed_h = 5
 
 class WaveCrierBlock(WaveBlockadeOf):
     def __init__(self, rows=5, row_delay=3):
         super().__init__(enemy_type=EnemyCrierMarcher,
                          rows=rows, row_delay=row_delay)
+        self.speed_h = 5
 
 
 class WaveSnowmanBlockade(WaveBlockadeOf):
@@ -212,7 +214,7 @@ class WaveSnowmanBlockade(WaveBlockadeOf):
 class WavePenguins:
     def spawn(self, game_context):
         for i in range(3):
-            penguin = EnemyPenguin()
+            penguin = EnemyPenguin(game_context)
             penguin.x -= i*35
             penguin.y = globals.get_v_unit_y_val(i + 1)
             game_context.enemies.append(penguin)
@@ -226,6 +228,14 @@ class LevelAbstract:
         self.waves = []
         self.waves_spawned = []
         self.wave_time_gap = 5.5
+        self.level_start_time = time.time()
+        self.wave_start_time = self.level_start_time - self.wave_time_gap
+
+    def reset(self):
+        self.spawning_complete = False
+        self.complete = False
+        self.wave_idx = 0
+        self.waves_spawned = [False] * len(self.waves)
         self.level_start_time = time.time()
         self.wave_start_time = self.level_start_time - self.wave_time_gap
 
@@ -359,4 +369,4 @@ class LevelSanta(TimedLevel):
 
 
 
-LEVEL_LIST = [Level2, Level1, Level2, Level3, Level4, LevelSanta, LevelZombie]
+LEVEL_LIST = [Level3, Level1, Level2, Level3, Level4, LevelSanta, LevelZombie]
